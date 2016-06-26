@@ -1,2 +1,122 @@
 ---
-# defaults file for gcoop-libre.apache
+apache_enablerepo: ''
+
+apache_listen_ip: '*'
+apache_listen_port: 80
+apache_listen_port_ssl: 443
+
+apache_base_dir: '/var/www'
+apache_web_subdir: 'web'
+apache_ssl_subdir: 'ssl'
+apache_private_subdir: 'private'
+
+apache_create_vhosts: true
+apache_vhosts_filename: 'vhosts.conf'
+
+# On Debian/Ubuntu, a default virtualhost is included in Apache's configuration.
+# Set this to `true` to remove that default.
+apache_remove_default_vhost: false
+
+apache_global_vhost_settings: |
+  DirectoryIndex index.php index.html index.htm
+
+apache_vhosts:
+  - servername: 'local.dev'
+    documentroot: '/var/www/html'
+  # Available properties
+  # - servername: 'local.dev'
+  #   serveralias:
+  #     - 'alias1.local'
+  #     - 'alias2.local'
+  #   serveradmin: webmaster@localhost
+  #   documentroot: '/var/www/html'
+  #   separate_logs: true
+  #   setenvif:
+  #     - attribute: 'X-Forwarded-For'
+  #       pattern: '(.*)'
+  #       var: 'ENV_VAR'
+  #       value: 'true'
+  #   redirect_to_https: false
+  #   allowoverride: 'All'
+  #   rewritebase: '/'
+  #   custom_rewrites:
+  #     - pattern: regex
+  #       substitution: text
+  #       flags: '[R=301,L]'
+  #       conditions:
+  #         - test_string: '%{HTTP_HOST}'
+  #           pattern: '^old\.site\.com$'
+  #           flags: '[NC]'
+  #   exclude_from_redirect:
+  #     - 'valid.alias.com'
+  #   redirect_to_file: '/index.php'
+  #   restricted_access:
+  #     - path: '/secret'
+  #       regex: false
+  #       ips:
+  #         - '127.0.0.1'
+  #         - '192.168.0.1'
+  #       hosts:
+  #         - 'www.site.com'
+  #       env_variables:
+  #         - 'ENV_VAR'
+  #       htpasswd: '/.htpasswd
+  #   extra_parameters: 'Custom VHost configuration'
+
+apache_vhosts_ssl: []
+  # Available properties
+  # - servername: 'local.dev'
+  #   serveralias:
+  #     - 'alias1.local'
+  #     - 'alias2.local'
+  #   serveradmin: webmaster@localhost
+  #   documentroot: '/var/www/html'
+  #   certificate_file: '/path/to/certificate.crt',
+  #   certificate_key_file: '/path/to/certificate.key',
+  #   certificate_chain_file: '/path/to/certificate_chain.crt'
+  #   separate_logs: true
+  #   setenvif:
+  #     - attribute: 'X-Forwarded-For'
+  #       pattern: '(.*)'
+  #       var: 'ENV_VAR'
+  #       value: 'true'
+  #   redirect_to_http: false
+  #   allowoverride: 'All'
+  #   rewritebase: '/'
+  #   custom_rewrites:
+  #     - pattern: regex
+  #       substitution: text
+  #       flags: '[R=301,L]'
+  #       conditions:
+  #         - test_string: '%{HTTP_HOST}'
+  #           pattern: '^old\.site\.com$'
+  #           flags: '[NC]'
+  #   exclude_from_redirect:
+  #     - 'valid.alias.com'
+  #   redirect_to_file: '/index.php'
+  #   restricted_access:
+  #     - path: '/secret'
+  #       regex: false
+  #       ips:
+  #         - '127.0.0.1'
+  #         - '192.168.0.1'
+  #       hosts:
+  #         - 'www.site.com'
+  #       env_variables:
+  #         - 'ENV_VAR'
+  #       htpasswd: '/.htpasswd
+  #   extra_parameters: 'Custom VHost configuration'
+
+apache_ignore_missing_ssl_certificate: true
+
+apache_ssl_protocol: 'All -SSLv2 -SSLv3'
+apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
+
+# Only used on Debian/Ubuntu.
+apache_mods_enabled:
+  - rewrite.load
+  - ssl.load
+apache_mods_disabled: []
+
+# Set initial apache state. Recommended values: `started` or `stopped`
+apache_state: started

@@ -1,0 +1,166 @@
+# {{ ansible_managed }}
+{# Set up SSL VirtualHosts #}
+{% if apache_ignore_missing_ssl_certificate or apache_ssl_certificates.results[loop.index0].stat.exists %}
+<VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}>
+{% if vhost.serveradmin is defined %}
+  ServerAdmin {{ vhost.serveradmin }}
+{% endif %}
+  DocumentRoot {{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}
+
+{% if vhost.separate_logs %}
+  ErrorLog ${APACHE_LOG_DIR}/{{ vhost.servername }}.error.log
+  CustomLog ${APACHE_LOG_DIR}/{{ vhost.servername }}.access.log combined
+{% endif %}
+
+  ServerName {{ vhost.servername }}
+
+{% if vhost.serveralias is defined %}
+{% for serveralias in vhost.serveralias %}
+  ServerAlias {{ serveralias }}
+{% endfor %}
+{% endif %}
+
+  SSLEngine on
+  SSLCipherSuite {{ apache_ssl_cipher_suite }}
+  SSLProtocol {{ apache_ssl_protocol }}
+  SSLHonorCipherOrder On
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+  Header always set X-Frame-Options DENY
+  Header always set X-Content-Type-Options nosniff
+{% if apache_vhosts_version == "2.4" %}
+  SSLCompression off 
+  SSLSessionTickets Off
+  SSLUseStapling on 
+  SSLStaplingCache "shmcb:logs/stapling-cache(150000)" 
+{% endif %}
+  SSLCertificateFile {{ vhost.certificate_file }}
+  SSLCertificateKeyFile {{ vhost.certificate_key_file }}
+{% if vhost.certificate_chain_file is defined %}
+  SSLCertificateChainFile {{ vhost.certificate_chain_file }}
+{% endif %}
+
+  <Directory "{{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}">
+{% if vhost.allowoverride is defined %}
+    AllowOverride {{ vhost.allowoverride }}
+{% else %}
+    AllowOverride None
+{% endif %}
+    Options -Indexes +FollowSymLinks
+{% if apache_vhosts_version == "2.2" %}
+    Order allow,deny
+    Allow from all
+{% else %}
+    Require all granted
+{% endif %}
+
+{% if 'rewrite.load' in apache_mods_enabled %}
+{% if vhost.serveralias is defined or vhost.custom_rewrites is defined or vhost.redirect_to_https or vhost.redirect_to_file is defined %}
+    RewriteEngine On
+{% if vhost.rewrite_base %}
+    RewriteBase {{ vhost.rewrite_base }}
+{% endif %}
+
+{% if vhost.redirect_to_http %}
+    RewriteCond %{HTTPS} = on
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+{% endif %}
+
+{% if vhost.custom_rewrites is defined %}
+{% for custom_rewrite in vhost.custom_rewrites %}
+{% if custom_rewrite.conditions is defined %}
+{% for condition in custom_rewrite.conditions %}
+    RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
+{% endfor %}
+{% endif %}
+    RewriteRule {{ custom_rewrite.pattern }} {{ custom_rewrite.substitution }} {{ custom_rewrite.flags }}
+
+{% endfor %}
+{% endif %}
+
+{% if vhost.serveralias is defined %}
+    RewriteCond %{HTTP_HOST} !^{{ vhost.servername | replace('.', '\.') }}$ [NC]
+{% if vhost.exclude_from_redirect is defined %}
+{% for serveralias in vhost.serveralias %}
+{% if serveralias in vhost.exclude_from_redirect %}
+    RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
+{% endif %}
+{% endfor %}
+{% endif %}
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+{% endif %}
+
+{% if vhost.redirect_to_file is defined %}
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . {{ vhost.redirect_to_file }} [L]
+{% endif %}
+{% endif %}
+{% endif %}
+  </Directory>
+
+{% if vhost.setenvif is defined %}
+{% for setenvif in vhost.setenvif %}
+  SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}={{ setenvif.value }}
+{% endfor %}
+{% endif %}
+
+{% if vhost.restricted_access is defined %}
+{% for restricted_access in vhost.restricted_access %}
+{% if restricted_access.path is defined %}
+  <Directory {% if restricted_access.regex %}~{% endif %} "{% if restricted_access.regex %}^{% endif %}{{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}{{ restricted_access.path }}">
+{% if restricted_access.ips is defined or restricted_access.hosts is defined or restricted_access.env_variables is defined %}
+{% if apache_vhosts_version == "2.2" %}
+    Order deny,allow
+    Deny from all
+{% if restricted_access.ips is defined %}
+{% for ip in restricted_access.ips %}
+    Allow from {{ ip }}
+{% endfor %}
+{% endif %}
+{% if restricted_access.hosts is defined %}
+{% for host in restricted_access.hosts %}
+    Allow from {{ host }}
+{% endfor %}
+{% endif %}
+{% if restricted_access.env_variables is defined %}
+{% for env_variable in restricted_access.env_variables %}
+    Allow from env={{ env_variable }}
+{% endfor %}
+{% endif %}
+{% else %}
+{% if restricted_access.ips is defined %}
+{% for ip in restricted_access.ips %}
+    Require ip {{ ip }}
+{% endfor %}
+{% endif %}
+{% if restricted_access.hosts is defined %}
+{% for host in restricted_access.hosts %}
+    Require host {{ host }}
+{% endfor %}
+{% endif %}
+{% if restricted_access.env_variables is defined %}
+{% for env_variable in restricted_access.env_variables %}
+    Require env {{ env_variable }}
+{% endfor %}
+{% endif %}
+    Require all denied
+{% endif %}
+{% endif %}
+
+{% if restricted_access.htpasswd is defined %}
+    AuthType Basic
+    AuthName "{{ vhost.servername }}"
+    AuthUserFile {{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_private_subdir) }}{{ restricted_access.htpasswd }}
+    Require valid-user
+{% endif %}
+  </Directory>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if vhost.extra_parameters is defined %}
+  {{ vhost.extra_parameters }}
+{% endif %}
+</VirtualHost>
+
+{% endif %}
