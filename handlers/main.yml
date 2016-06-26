@@ -1,2 +1,5 @@
 ---
-# handlers file for gcoop-libre.apache
+- name: restart apache
+  service:
+    name: "{{ apache_service }}"
+    state: restarted
