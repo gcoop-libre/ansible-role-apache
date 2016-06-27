@@ -16,6 +16,26 @@
   with_items: "{{ apache_ports_configuration_commented_items }}"
   notify: restart apache
 
+- name: Configure Apache Security.
+  lineinfile:
+    dest: "{{ apache_server_root }}/conf.d/security"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_security_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.2'
+
+- name: Configure Apache Security.
+  lineinfile:
+    dest: "{{ apache_server_root }}/conf-available/security.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_security_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4'
+
 - name: Enable Apache mods.
   file:
     src: "{{ apache_server_root }}/mods-available/{{ item }}"

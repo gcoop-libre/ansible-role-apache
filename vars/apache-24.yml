@@ -4,3 +4,10 @@ apache_default_vhost_filename: 000-default.conf
 apache_ports_configuration_items:
   - regexp: '^Listen '
     line: 'Listen {{ apache_listen_port }}'
+apache_security_configuration_items:
+  - regexp: '^TraceEnable '
+    line: 'TraceEnable Off'
+  - regexp: '^ServerSignature '
+    line: 'ServerSignature Off'
+  - regexp: '^ServerTokens '
+    line: 'ServerTokens Prod'
