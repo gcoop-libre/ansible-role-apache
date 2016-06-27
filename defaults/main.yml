@@ -116,6 +116,8 @@ apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
 apache_mods_enabled:
   - rewrite.load
   - ssl.load
+  - headers.load
+  - socache_shmcb.load
 apache_mods_disabled: []
 
 # Set initial apache state. Recommended values: `started` or `stopped`
