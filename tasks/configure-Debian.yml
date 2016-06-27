@@ -8,12 +8,11 @@
   with_items: "{{ apache_ports_configuration_items }}"
   notify: restart apache
 
-- name: Configure Apache: Remove default SSL
-  lineinfile:
+- name: "Configure Apache: Remove default SSL"
+  replace:
     dest: "{{ apache_server_root }}/ports.conf"
     regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
+    replace: "{{ item.line }}"
   with_items: "{{ apache_ports_configuration_commented_items }}"
   notify: restart apache
 
@@ -42,7 +41,25 @@
     group: root
     mode: '0644'
   notify: restart apache
-  when: apache_create_vhosts
+  when: apache_create_vhosts and apache_vhosts_version == '2.2'
+
+- name: Add apache vhosts configuration.
+  template:
+    src: vhosts.conf.j2
+    dest: "{{ apache_conf_path }}/conf-available/{{ apache_vhosts_filename }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart apache
+  when: apache_create_vhosts and apache_vhosts_version == '2.4'
+
+- name: Enable apache vhosts configuration.
+  file:
+    src: "{{ apache_conf_path }}/conf-available/{{ apache_vhosts_filename }}"
+    dest: "{{ apache_conf_path }}/conf-enabled/{{ apache_vhosts_filename }}"
+    state: link
+  notify: restart apache
+  when: apache_create_vhosts and apache_vhosts_version == '2.4'
 
 - name: Remove default vhost in sites-enabled.
   file:
