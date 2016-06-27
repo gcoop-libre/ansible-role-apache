@@ -2,20 +2,20 @@
 {# Set up SSL VirtualHosts #}
 {% if apache_ignore_missing_ssl_certificate or apache_ssl_certificates.results[loop.index0].stat.exists %}
 <VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}>
-{% if vhost.serveradmin is defined %}
-  ServerAdmin {{ vhost.serveradmin }}
+{% if item.serveradmin is defined %}
+  ServerAdmin {{ item.serveradmin }}
 {% endif %}
-  DocumentRoot {{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}
+  DocumentRoot {{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}
 
-{% if vhost.separate_logs %}
-  ErrorLog ${APACHE_LOG_DIR}/{{ vhost.servername }}.error.log
-  CustomLog ${APACHE_LOG_DIR}/{{ vhost.servername }}.access.log combined
+{% if item.separate_logs is defined and item.separate_logs %}
+  ErrorLog ${APACHE_LOG_DIR}/{{ item.servername }}.error.log
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined
 {% endif %}
 
-  ServerName {{ vhost.servername }}
+  ServerName {{ item.servername }}
 
-{% if vhost.serveralias is defined %}
-{% for serveralias in vhost.serveralias %}
+{% if item.serveralias is defined %}
+{% for serveralias in item.serveralias %}
   ServerAlias {{ serveralias }}
 {% endfor %}
 {% endif %}
@@ -23,25 +23,26 @@
   SSLEngine on
   SSLCipherSuite {{ apache_ssl_cipher_suite }}
   SSLProtocol {{ apache_ssl_protocol }}
-  SSLHonorCipherOrder On
+  SSLHonorCipherOrder on
   Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
   Header always set X-Frame-Options DENY
   Header always set X-Content-Type-Options nosniff
 {% if apache_vhosts_version == "2.4" %}
   SSLCompression off 
-  SSLSessionTickets Off
-  SSLUseStapling on 
-  SSLStaplingCache "shmcb:logs/stapling-cache(150000)" 
+{% if apache_version | version_compare('2.4.11', '>=') %}
+  SSLSessionTickets off
 {% endif %}
-  SSLCertificateFile {{ vhost.certificate_file }}
-  SSLCertificateKeyFile {{ vhost.certificate_key_file }}
-{% if vhost.certificate_chain_file is defined %}
-  SSLCertificateChainFile {{ vhost.certificate_chain_file }}
+  SSLUseStapling on 
+{% endif %}
+  SSLCertificateFile {{ item.certificate_file }}
+  SSLCertificateKeyFile {{ item.certificate_key_file }}
+{% if item.certificate_chain_file is defined %}
+  SSLCertificateChainFile {{ item.certificate_chain_file }}
 {% endif %}
 
-  <Directory "{{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}">
-{% if vhost.allowoverride is defined %}
-    AllowOverride {{ vhost.allowoverride }}
+  <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}">
+{% if item.allowoverride is defined %}
+    AllowOverride {{ item.allowoverride }}
 {% else %}
     AllowOverride None
 {% endif %}
@@ -54,19 +55,19 @@
 {% endif %}
 
 {% if 'rewrite.load' in apache_mods_enabled %}
-{% if vhost.serveralias is defined or vhost.custom_rewrites is defined or vhost.redirect_to_https or vhost.redirect_to_file is defined %}
+{% if item.serveralias is defined or item.custom_rewrites is defined or (item.redirect_to_http is defined and item.redirect_to_http) or item.redirect_to_file is defined %}
     RewriteEngine On
-{% if vhost.rewrite_base %}
-    RewriteBase {{ vhost.rewrite_base }}
+{% if item.rewrite_base %}
+    RewriteBase {{ item.rewrite_base }}
 {% endif %}
 
-{% if vhost.redirect_to_http %}
+{% if item.redirect_to_http and item.redirect_to_http %}
     RewriteCond %{HTTPS} = on
     RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
 {% endif %}
 
-{% if vhost.custom_rewrites is defined %}
-{% for custom_rewrite in vhost.custom_rewrites %}
+{% if item.custom_rewrites is defined %}
+{% for custom_rewrite in item.custom_rewrites %}
 {% if custom_rewrite.conditions is defined %}
 {% for condition in custom_rewrite.conditions %}
     RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
@@ -77,11 +78,11 @@
 {% endfor %}
 {% endif %}
 
-{% if vhost.serveralias is defined %}
-    RewriteCond %{HTTP_HOST} !^{{ vhost.servername | replace('.', '\.') }}$ [NC]
-{% if vhost.exclude_from_redirect is defined %}
-{% for serveralias in vhost.serveralias %}
-{% if serveralias in vhost.exclude_from_redirect %}
+{% if item.serveralias is defined %}
+    RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
+{% if item.exclude_from_redirect is defined %}
+{% for serveralias in item.serveralias %}
+{% if serveralias in item.exclude_from_redirect %}
     RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
 {% endif %}
 {% endfor %}
@@ -89,25 +90,25 @@
     RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
 {% endif %}
 
-{% if vhost.redirect_to_file is defined %}
+{% if item.redirect_to_file is defined %}
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . {{ vhost.redirect_to_file }} [L]
+    RewriteRule . {{ item.redirect_to_file }} [L]
 {% endif %}
 {% endif %}
 {% endif %}
   </Directory>
 
-{% if vhost.setenvif is defined %}
-{% for setenvif in vhost.setenvif %}
+{% if item.setenvif is defined %}
+{% for setenvif in item.setenvif %}
   SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}={{ setenvif.value }}
 {% endfor %}
 {% endif %}
 
-{% if vhost.restricted_access is defined %}
-{% for restricted_access in vhost.restricted_access %}
+{% if item.restricted_access is defined %}
+{% for restricted_access in item.restricted_access %}
 {% if restricted_access.path is defined %}
-  <Directory {% if restricted_access.regex %}~{% endif %} "{% if restricted_access.regex %}^{% endif %}{{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_ssl_subdir) }}{{ restricted_access.path }}">
+  <Directory {% if restricted_access.regex %}~{% endif %} "{% if restricted_access.regex %}^{% endif %}{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}{{ restricted_access.path }}">
 {% if restricted_access.ips is defined or restricted_access.hosts is defined or restricted_access.env_variables is defined %}
 {% if apache_vhosts_version == "2.2" %}
     Order deny,allow
@@ -149,8 +150,8 @@
 
 {% if restricted_access.htpasswd is defined %}
     AuthType Basic
-    AuthName "{{ vhost.servername }}"
-    AuthUserFile {{ vhost.documentroot | default(apache_base_dir + '/' + vhost.servername + '/' + apache_private_subdir) }}{{ restricted_access.htpasswd }}
+    AuthName "{{ item.servername }}"
+    AuthUserFile {{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_private_subdir) }}{{ restricted_access.htpasswd }}
     Require valid-user
 {% endif %}
   </Directory>
@@ -158,8 +159,8 @@
 {% endfor %}
 {% endif %}
 
-{% if vhost.extra_parameters is defined %}
-  {{ vhost.extra_parameters }}
+{% if item.extra_parameters is defined %}
+  {{ item.extra_parameters }}
 {% endif %}
 </VirtualHost>
 

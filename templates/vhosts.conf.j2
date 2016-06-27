@@ -6,6 +6,8 @@ Listen {{ apache_listen_port_ssl }}
 {% if apache_vhosts_version == "2.2" %}
 NameVirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}
 {% endif %}
+
+SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
 {% endif %}
 
 {% if ansible_os_family in [ 'RedHat', 'Solaris', 'Suse' ] %}
