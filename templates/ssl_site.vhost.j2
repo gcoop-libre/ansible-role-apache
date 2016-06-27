@@ -28,16 +28,34 @@
   Header always set X-Frame-Options DENY
   Header always set X-Content-Type-Options nosniff
 {% if apache_vhosts_version == "2.4" %}
-  SSLCompression off 
+  SSLCompression off
 {% if apache_version | version_compare('2.4.11', '>=') %}
   SSLSessionTickets off
 {% endif %}
-  SSLUseStapling on 
+  SSLUseStapling on
 {% endif %}
   SSLCertificateFile {{ item.certificate_file }}
   SSLCertificateKeyFile {{ item.certificate_key_file }}
 {% if item.certificate_chain_file is defined %}
   SSLCertificateChainFile {{ item.certificate_chain_file }}
+{% endif %}
+
+{% if item.deflate is defined and item.deflate %}
+  SetOutputFilter DEFLATE
+
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+  # Don't compress images and other uncompressible content
+  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
+
+  # Make sure proxies don't deliver the wrong content
+  Header append Vary User-Agent env=!dont-vary
+{% endif %}
+
+{% if item.fileetag is defined and item.fileetag %}
+  FileETag MTime Size
 {% endif %}
 
   <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}">
@@ -63,7 +81,7 @@
 
 {% if item.redirect_to_http and item.redirect_to_http %}
     RewriteCond %{HTTPS} = on
-    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.custom_rewrites is defined %}
@@ -87,7 +105,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.redirect_to_file is defined %}

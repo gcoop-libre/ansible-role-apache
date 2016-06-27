@@ -62,6 +62,8 @@ You can add or override global Apache configuration settings in the role-provide
         serveradmin: webmaster@localhost
         documentroot: '/var/www/html'
         separate_logs: true
+        deflate: true
+        fileetag: true
         setenvif:
           - attribute: 'X-Forwarded-For'
             pattern: '(.*)'

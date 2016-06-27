@@ -19,6 +19,24 @@
 {% endfor %}
 {% endif %}
 
+{% if item.deflate is defined and item.deflate %}
+  SetOutputFilter DEFLATE
+
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+  # Don't compress images and other uncompressible content
+  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
+
+  # Make sure proxies don't deliver the wrong content
+  Header append Vary User-Agent env=!dont-vary
+{% endif %}
+
+{% if item.fileetag is defined and item.fileetag %}
+  FileETag MTime Size
+{% endif %}
+
   <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_web_subdir) }}">
 {% if item.allowoverride is defined %}
     AllowOverride {{ item.allowoverride }}
@@ -42,7 +60,7 @@
 
 {% if item.redirect_to_https is defined and item.redirect_to_https %}
     RewriteCond %{HTTPS} != on
-    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.custom_rewrites is defined %}
@@ -66,7 +84,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L] 
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.redirect_to_file is defined %}

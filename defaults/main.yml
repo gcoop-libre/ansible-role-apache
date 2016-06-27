@@ -31,6 +31,8 @@ apache_vhosts:
   #   serveradmin: webmaster@localhost
   #   documentroot: '/var/www/html'
   #   separate_logs: true
+  #   deflate: true
+  #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'
@@ -75,6 +77,8 @@ apache_vhosts_ssl: []
   #   certificate_key_file: '/path/to/certificate.key',
   #   certificate_chain_file: '/path/to/certificate_chain.crt'
   #   separate_logs: true
+  #   deflate: true
+  #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'
