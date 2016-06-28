@@ -60,7 +60,7 @@
 {% endif %}
 
 {% if item.redirect_to_https is defined and item.redirect_to_https %}
-    RewriteCond %{HTTPS} != on
+    RewriteCond %{HTTPS} != On
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 

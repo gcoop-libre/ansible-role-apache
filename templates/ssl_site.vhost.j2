@@ -21,10 +21,10 @@
 {% endfor %}
 {% endif %}
 
-  SSLEngine on
+  SSLEngine On
   SSLCipherSuite {{ apache_ssl_cipher_suite }}
   SSLProtocol {{ apache_ssl_protocol }}
-  SSLHonorCipherOrder on
+  SSLHonorCipherOrder On
 {% if item.sts | default(apache_sts) %}
   Header always set Strict-Transport-Security "max-age={{ item.sts_max_age | default(apache_sts_max_age) }}; {% if item.sts_subdomains | default(apache_sts_subdomains) %}includeSubDomains{% endif %}"
 {% endif %}
@@ -32,11 +32,11 @@
   Header always set X-Content-Type-Options nosniff
 
 {% if apache_vhosts_version == "2.4" %}
-  SSLCompression off
+  SSLCompression Off
 {% if apache_version | version_compare('2.4.11', '>=') %}
-  SSLSessionTickets off
+  SSLSessionTickets Off
 {% endif %}
-  SSLUseStapling on
+  SSLUseStapling On
 {% endif %}
   SSLCertificateFile {{ item.certificate_file }}
   SSLCertificateKeyFile {{ item.certificate_key_file }}
@@ -84,7 +84,7 @@
 {% endif %}
 
 {% if item.redirect_to_http and item.redirect_to_http %}
-    RewriteCond %{HTTPS} = on
+    RewriteCond %{HTTPS} = On
     RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
