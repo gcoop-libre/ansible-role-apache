@@ -15,11 +15,11 @@ Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    apache_enablerepo: ""
+    apache_enablerepo: ''
 
 The repository to use when installing Apache (only used on RHEL/CentOS systems). If you'd like later versions of Apache than are available in the OS's core repositories, use a repository like EPEL.
 
-    apache_listen_ip: "*"
+    apache_listen_ip: '*'
     apache_listen_port: 80
     apache_listen_port_ssl: 443
 
@@ -40,7 +40,7 @@ The subdirectory for the HTTP web files, the one for the HTTPS web files and the
 - apache_base_dir/SITENAME/apache_private_subdir
 
     apache_create_vhosts: true
-    apache_vhosts_filename: "vhosts.conf"
+    apache_vhosts_filename: 'vhosts.conf'
 
 If set to true, a global vhosts configuration file and one file per Virtual Host, managed by this role's variables (see below), will be created and placed in the Apache configuration folder. If set to false, you can place your own vhosts files into Apache's configuration folder and skip the convenient (but more basic) ones added by this role.
 
@@ -109,12 +109,12 @@ The `|` denotes a multiline scalar block in YAML, so newlines are preserved in t
 No SSL vhosts are configured by default, but you can add them using the same pattern as `apache_vhosts`, with a few additional directives:
 
     apache_vhosts_ssl:
-      - servername: "local.dev",
+      - servername: 'local.dev',
         certificate_file: '/path/to/certificate.crt'
         certificate_key_file: '/path/to/certificate.key'
         certificate_chain_file: '/path/to/certificate_chain.crt'
         sts: true
-        sts_max_age: "63072000"
+        sts_max_age: '63072000'
         sts_subdomains: true
         redirect_to_http: false
 
@@ -122,13 +122,13 @@ These first three properties set the certificates path. The next three allow the
 
 The are other SSL directives can be managed with other SSL-related role variables.
 
-    apache_ssl_protocol: "All -SSLv2 -SSLv3"
+    apache_ssl_protocol: 'All -SSLv2 -SSLv3'
     apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
 
 The SSL protocols and cipher suites that are used/allowed when clients make secure connections to your server. These are secure/sane defaults, but for maximum security, performand, and/or compatibility, you may need to adjust these settings. You may find some information in [Cipherli.st: Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/).
 
     apache_sts: true
-    apache_sts_max_age: "63072000"
+    apache_sts_max_age: '63072000'
     apache_sts_subdomains: true
 
 HTTP Strict Transport Security is enabled by default, with a Max Age of 1 year and the subdomains are included. This global configurations can be overrided vhost by vhost.
