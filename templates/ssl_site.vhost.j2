@@ -75,7 +75,7 @@
 {% if 'rewrite.load' in apache_mods_enabled %}
 {% if item.serveralias is defined or item.custom_rewrites is defined or (item.redirect_to_http is defined and item.redirect_to_http) or item.redirect_to_file is defined %}
     RewriteEngine On
-{% if item.rewrite_base %}
+{% if item.rewrite_base is defined %}
     RewriteBase {{ item.rewrite_base }}
 {% endif %}
 
