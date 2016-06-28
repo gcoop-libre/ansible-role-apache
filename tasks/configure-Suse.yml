@@ -17,6 +17,26 @@
   with_items: "{{ apache_keepalive_configuration_items }}"
   notify: restart apache
 
+- name: Configure Apache MPM Modules.
+  replace:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: item.insertbefore is not defined
+
+- name: Configure Apache MPM Modules Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: item.insertbefore is defined
+
 - name: Configure Apache Security.
   lineinfile:
     dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"

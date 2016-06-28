@@ -25,6 +25,66 @@
   with_items: "{{ apache_keepalive_configuration_items }}"
   notify: restart apache
 
+- name: Configure Apache MPM Modules.
+  replace:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.2' and item.insertbefore is not defined
+
+- name: Configure Apache MPM Modules Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.2' and item.insertbefore is defined
+
+- name: Configure Apache MPM Prefork Module.
+  replace:
+    dest: "{{ apache_server_root }}/mods-available/mpm_prefork.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is not defined
+
+- name: Configure Apache MPM Prefork Module Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/mods-available/mpm_prefork.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is defined
+
+- name: Configure Apache MPM Worker Module.
+  replace:
+    dest: "{{ apache_server_root }}/mods-available/mpm_worker.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_worker_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is not defined
+
+- name: Configure Apache MPM Worker Module Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/mods-available/mpm_worker.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_worker_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is defined
+
 - name: Configure Apache Security.
   lineinfile:
     dest: "{{ apache_server_root }}/conf.d/security"

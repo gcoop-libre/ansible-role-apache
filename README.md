@@ -31,6 +31,26 @@ The IP address and ports on which apache should be listening. Useful if you have
 
 This properties enables HTTP persistent connections and its timeout and max requests can be customized.
 
+    apache_prefork_server_limit: 256
+    apache_prefork_start_servers: 5
+    apache_prefork_min_spare_servers: 5
+    apache_prefork_max_spare_servers: 10
+    apache_prefork_max_clients: 256
+    apache_prefork_max_requests_per_child: 0
+
+The configuration of the server MPM module. This properties will apply for the MPM Prefork module and the MPM Worker module. Only Apache 2.4 on Debian you can configure the MPM modes with different values, because it has two separated files.
+
+    apache_worker_server_limit: 16
+    apache_worker_start_servers: 3
+    apache_worker_min_spare_threads: 75
+    apache_worker_max_spare_threads: 250
+    apache_worker_max_clients: 400
+    apache_worker_max_requests_per_child: 0
+    apache_worker_thread_limit: 64
+    apache_worker_threads_per_child: 25
+
+The configuration of the MPM Worker module. This is only available for Apache 2.4 on Debian GNU/Linux.
+
     apache_base_dir: '/var/www'
 
 The base directory where the web sites would be allocated. This value is used with the next three to generate the Document Root for the Virtual Hosts that hasn't an explicit Document Root.

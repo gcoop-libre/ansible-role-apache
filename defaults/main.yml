@@ -9,6 +9,22 @@ apache_keepalive: true
 apache_keepalive_requests: 500
 apache_keepalive_timeout: 5
 
+apache_prefork_server_limit: 256
+apache_prefork_start_servers: 5
+apache_prefork_min_spare_servers: 5
+apache_prefork_max_spare_servers: 10
+apache_prefork_max_clients: 256
+apache_prefork_max_requests_per_child: 0
+
+apache_worker_server_limit: 16
+apache_worker_start_servers: 3
+apache_worker_min_spare_threads: 75
+apache_worker_max_spare_threads: 250
+apache_worker_max_clients: 400
+apache_worker_max_requests_per_child: 0
+apache_worker_thread_limit: 64
+apache_worker_threads_per_child: 25
+
 apache_base_dir: '/var/www'
 apache_web_subdir: 'web'
 apache_ssl_subdir: 'ssl'
