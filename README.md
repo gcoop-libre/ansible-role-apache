@@ -25,6 +25,12 @@ The repository to use when installing Apache (only used on RHEL/CentOS systems).
 
 The IP address and ports on which apache should be listening. Useful if you have another service (like a reverse proxy) listening on port 80 or 443 and need to change the defaults.
 
+    apache_keepalive: true
+    apache_keepalive_requests: 500
+    apache_keepalive_timeout: 5
+
+This properties enables HTTP persistent connections and its timeout and max requests can be customized.
+
     apache_base_dir: '/var/www'
 
 The base directory where the web sites would be allocated. This value is used with the next three to generate the Document Root for the Virtual Hosts that hasn't an explicit Document Root.

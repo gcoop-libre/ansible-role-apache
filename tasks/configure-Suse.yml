@@ -8,6 +8,15 @@
   with_items: "{{ apache_ports_configuration_items }}"
   notify: restart apache
 
+- name: Configure Apache KeepAlive.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_keepalive_configuration_items }}"
+  notify: restart apache
+
 - name: Configure Apache Security.
   lineinfile:
     dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"

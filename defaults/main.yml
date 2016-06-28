@@ -5,6 +5,10 @@ apache_listen_ip: '*'
 apache_listen_port: 80
 apache_listen_port_ssl: 443
 
+apache_keepalive: true
+apache_keepalive_requests: 500
+apache_keepalive_timeout: 5
+
 apache_base_dir: '/var/www'
 apache_web_subdir: 'web'
 apache_ssl_subdir: 'ssl'

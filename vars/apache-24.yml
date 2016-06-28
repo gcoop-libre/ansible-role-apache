@@ -11,3 +11,10 @@ apache_security_configuration_items:
     line: 'ServerSignature Off'
   - regexp: '^ServerTokens '
     line: 'ServerTokens Prod'
+apache_keepalive_configuration_items:
+  - regexp: '^KeepAlive '
+    line: 'KeepAlive {% if apache_keepalive %}On{% else %}Off{% endif %}'
+  - regexp: '^MaxKeepAliveRequests '
+    line: 'MaxKeepAliveRequests {{ apache_keepalive_requests }}'
+  - regexp: '^KeepAliveTimeout '
+    line: 'KeepAliveTimeout {{ apache_keepalive_timeout }}'
