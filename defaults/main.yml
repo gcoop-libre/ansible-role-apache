@@ -25,6 +25,15 @@ apache_worker_max_requests_per_child: 0
 apache_worker_thread_limit: 64
 apache_worker_threads_per_child: 25
 
+apache_event_server_limit: 16
+apache_event_start_servers: 3
+apache_event_min_spare_threads: 75
+apache_event_max_spare_threads: 250
+apache_event_max_clients: 400
+apache_event_max_requests_per_child: 0
+apache_event_thread_limit: 64
+apache_event_threads_per_child: 25
+
 apache_base_dir: '/var/www'
 apache_web_subdir: 'web'
 apache_ssl_subdir: 'ssl'

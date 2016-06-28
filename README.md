@@ -38,7 +38,7 @@ This properties enables HTTP persistent connections and its timeout and max requ
     apache_prefork_max_clients: 256
     apache_prefork_max_requests_per_child: 0
 
-The configuration of the server MPM module. This properties will apply for the MPM Prefork module and the MPM Worker module. Only Apache 2.4 on Debian you can configure the MPM modes with different values, because it has two separated files.
+The configuration of the server MPM module. This properties will apply for the MPM Prefork module and the MPM Worker module. Only Apache 2.4 on Debian you can configure the MPM modes with different values, because it has separated files.
 
     apache_worker_server_limit: 16
     apache_worker_start_servers: 3
@@ -50,6 +50,17 @@ The configuration of the server MPM module. This properties will apply for the M
     apache_worker_threads_per_child: 25
 
 The configuration of the MPM Worker module. This is only available for Apache 2.4 on Debian GNU/Linux.
+
+    apache_event_server_limit: 16
+    apache_event_start_servers: 3
+    apache_event_min_spare_threads: 75
+    apache_event_max_spare_threads: 250
+    apache_event_max_clients: 400
+    apache_event_max_requests_per_child: 0
+    apache_event_thread_limit: 64
+    apache_event_threads_per_child: 25
+
+The configuration of the MPM Event module. This is only available for Apache 2.4 on Debian GNU/Linux.
 
     apache_base_dir: '/var/www'
 

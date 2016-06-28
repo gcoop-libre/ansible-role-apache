@@ -85,6 +85,26 @@
   notify: restart apache
   when: apache_vhosts_version == '2.4' and item.insertbefore is defined
 
+- name: Configure Apache MPM Event Module.
+  replace:
+    dest: "{{ apache_server_root }}/mods-available/mpm_event.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_event_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is not defined
+
+- name: Configure Apache MPM Event Module Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/mods-available/mpm_event.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_event_configuration_items }}"
+  notify: restart apache
+  when: apache_vhosts_version == '2.4' and item.insertbefore is defined
+
 - name: Configure Apache Security.
   lineinfile:
     dest: "{{ apache_server_root }}/conf.d/security"
