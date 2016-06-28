@@ -93,7 +93,7 @@ You can add or override global Apache configuration settings in the role-provide
               - 'www.site.com'
             env_variables:
               - 'ENV_VAR'
-            htpasswd: '/.htpasswd
+            htpasswd: '/.htpasswd'
         extra_parameters: 'Custom VHost configuration'
 
 Add a set of properties per virtualhost. The only one required is `servername`. If there is no documentroot, it will be generated as described before.
@@ -110,8 +110,8 @@ No SSL vhosts are configured by default, but you can add them using the same pat
 
     apache_vhosts_ssl:
       - servername: "local.dev",
-        certificate_file: '/path/to/certificate.crt',
-        certificate_key_file: '/path/to/certificate.key',
+        certificate_file: '/path/to/certificate.crt'
+        certificate_key_file: '/path/to/certificate.key'
         certificate_chain_file: '/path/to/certificate_chain.crt'
         redirect_to_http: false
 
