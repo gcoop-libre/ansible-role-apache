@@ -12,6 +12,7 @@
 {% endif %}
 
   ServerName {{ item.servername }}
+  UseCanonicalName On
 
 {% if item.serveralias is defined %}
 {% for serveralias in item.serveralias %}
