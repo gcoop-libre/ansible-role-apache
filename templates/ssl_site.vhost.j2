@@ -25,9 +25,12 @@
   SSLCipherSuite {{ apache_ssl_cipher_suite }}
   SSLProtocol {{ apache_ssl_protocol }}
   SSLHonorCipherOrder on
-  Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+{% if item.sts | default(apache_sts) %}
+  Header always set Strict-Transport-Security "max-age={{ item.sts_max_age | default(apache_sts_max_age) }}; {% if item.sts_subdomains | default(apache_sts_subdomains) %}includeSubDomains{% endif %}"
+{% endif %}
   Header always set X-Frame-Options DENY
   Header always set X-Content-Type-Options nosniff
+
 {% if apache_vhosts_version == "2.4" %}
   SSLCompression off
 {% if apache_version | version_compare('2.4.11', '>=') %}
@@ -106,7 +109,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.redirect_to_file is defined %}

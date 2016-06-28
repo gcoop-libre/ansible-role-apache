@@ -113,9 +113,12 @@ No SSL vhosts are configured by default, but you can add them using the same pat
         certificate_file: '/path/to/certificate.crt'
         certificate_key_file: '/path/to/certificate.key'
         certificate_chain_file: '/path/to/certificate_chain.crt'
+        sts: true
+        sts_max_age: "63072000"
+        sts_subdomains: true
         redirect_to_http: false
 
-These first three properties set the certificates path. The last one redirects all the requests to the HTTP host.
+These first three properties set the certificates path. The next three allow the override of the global STS configuration. The last one redirects all the requests to the HTTP host.
 
 The are other SSL directives can be managed with other SSL-related role variables.
 
@@ -123,6 +126,12 @@ The are other SSL directives can be managed with other SSL-related role variable
     apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
 
 The SSL protocols and cipher suites that are used/allowed when clients make secure connections to your server. These are secure/sane defaults, but for maximum security, performand, and/or compatibility, you may need to adjust these settings. You may find some information in [Cipherli.st: Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/).
+
+    apache_sts: true
+    apache_sts_max_age: "63072000"
+    apache_sts_subdomains: true
+
+HTTP Strict Transport Security is enabled by default, with a Max Age of 1 year and the subdomains are included. This global configurations can be overrided vhost by vhost.
 
     apache_mods_enabled:
       - rewrite.load

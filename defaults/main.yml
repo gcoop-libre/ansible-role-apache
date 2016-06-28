@@ -76,6 +76,9 @@ apache_vhosts_ssl: []
   #   certificate_file: '/path/to/certificate.crt'
   #   certificate_key_file: '/path/to/certificate.key'
   #   certificate_chain_file: '/path/to/certificate_chain.crt'
+  #   sts: true
+  #   sts_max_age: "63072000"
+  #   sts_subdomains: true
   #   separate_logs: true
   #   deflate: true
   #   fileetag: true
@@ -115,6 +118,10 @@ apache_ignore_missing_ssl_certificate: true
 
 apache_ssl_protocol: 'All -SSLv2 -SSLv3'
 apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
+
+apache_sts: true
+apache_sts_max_age: "63072000"
+apache_sts_subdomains: true
 
 # Only used on Debian/Ubuntu.
 apache_mods_enabled:
