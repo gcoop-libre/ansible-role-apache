@@ -1,0 +1,59 @@
+---
+- name: Configure Apache.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_ports_configuration_items }}"
+  notify: restart apache
+
+- name: Configure Apache KeepAlive.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_keepalive_configuration_items }}"
+  notify: restart apache
+
+- name: Configure Apache MPM Modules.
+  replace:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: item.insertbefore is not defined
+
+- name: Configure Apache MPM Modules Limits.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore }}"
+    state: present
+  with_items: "{{ apache_mpm_prefork_configuration_items }}"
+  notify: restart apache
+  when: item.insertbefore is defined
+
+- name: Configure Apache Security.
+  lineinfile:
+    dest: "{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ apache_security_configuration_items }}"
+  notify: restart apache
+
+- include: create-config-directories.yml
+
+- name: Add apache vhosts configuration.
+  template:
+    src: vhosts.conf.j2
+    dest: "{{ apache_conf_path }}/{{ apache_vhosts_filename }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart apache
+  when: apache_create_vhosts

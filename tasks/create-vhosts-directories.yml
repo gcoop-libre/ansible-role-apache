@@ -1,0 +1,26 @@
+---
+- name: Create VHosts directories
+  file:
+    path: "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_web_subdir) }}"
+    state: directory
+  with_items: "{{ apache_vhosts }}"
+
+- name: Create VHosts private directories
+  file:
+    path: "{{ apache_base_dir }}/{{ item.servername }}/{{ apache_private_subdir }}"
+    state: directory
+  with_items: "{{ apache_vhosts }}"
+  when: item.documentroot is not defined
+
+- name: Create SSL VHosts directories
+  file:
+    path: "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}"
+    state: directory
+  with_items: "{{ apache_vhosts_ssl }}"
+
+- name: Create SSL VHosts private directories
+  file:
+    path: "{{ apache_base_dir }}/{{ item.servername }}/{{ apache_private_subdir }}"
+    state: directory
+  with_items: "{{ apache_vhosts_ssl }}"
+  when: item.documentroot is not defined

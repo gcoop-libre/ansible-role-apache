@@ -1,0 +1,40 @@
+---
+- name: Add apache sites configuration files.
+  template:
+    src: site.vhost.j2
+    dest: "{{ apache_conf_path }}/sites-available/{{ item.servername }}.vhost"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ apache_vhosts }}"
+  notify: restart apache
+  when: apache_create_vhosts
+
+- name: Add sites symlink in sites-enabled.
+  file:
+    src: "{{ apache_conf_path }}/sites-available/{{ item.servername }}.vhost"
+    dest: "{{ apache_conf_path }}/sites-enabled/{{ item.servername }}.vhost.conf"
+    state: link
+  with_items: "{{ apache_vhosts }}"
+  notify: restart apache
+  when: apache_create_vhosts
+
+- name: Add apache SSL sites configuration files.
+  template:
+    src: "ssl_site.vhost.j2"
+    dest: "{{ apache_conf_path }}/sites-available/{{ item.servername }}.ssl.vhost"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ apache_vhosts_ssl }}"
+  notify: restart apache
+  when: apache_create_vhosts
+
+- name: Add SSL sites symlink in sites-enabled.
+  file:
+    src: "{{ apache_conf_path }}/sites-available/{{ item.servername }}.ssl.vhost"
+    dest: "{{ apache_conf_path }}/sites-enabled/{{ item.servername }}.ssl.vhost.conf"
+    state: link
+  with_items: "{{ apache_vhosts_ssl }}"
+  notify: restart apache
+  when: apache_create_vhosts

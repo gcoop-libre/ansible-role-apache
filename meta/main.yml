@@ -1,0 +1,33 @@
+galaxy_info:
+  author: gcoop-libre
+  description: Apache 2.x for RHEL/CentOS, Debian/Ubuntu, SLES and Solaris
+  company: gcoop Cooperativa de Software Libre
+  license: GPLv2
+  min_ansible_version: 1.9
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: EL
+      versions:
+        - all
+    - name: opensuse
+      versions:
+        - all
+    - name: Solaris
+      versions:
+        - 11.3
+    - name: Ubuntu
+      versions:
+        - precise
+        - quantal
+        - raring
+        - saucy
+        - trusty
+        - utopic
+        - vivid
+        - wily
+        - xenial
+  galaxy_tags:
+    - apache
+    - virtualhost

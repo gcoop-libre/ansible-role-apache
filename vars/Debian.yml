@@ -1,0 +1,16 @@
+---
+apache_service: apache2
+apache_daemon: apache2
+apache_daemon_path: /usr/sbin/
+apache_server_root: /etc/apache2
+apache_conf_path: /etc/apache2
+
+__apache_packages:
+  - apache2
+  - apache2-utils
+
+apache_ports_configuration_commented_items:
+  - regexp: '^\s+Listen '
+    line: '#Listen '
+  - regexp: '^\s+NameVirtualHost '
+    line: '#NameVirtualHost '

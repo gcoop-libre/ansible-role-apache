@@ -1,0 +1,17 @@
+---
+# Distro related Apache configuration
+- include: configure-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: configure-Suse.yml
+  when: ansible_os_family == 'Suse'
+
+- include: configure-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: configure-Solaris.yml
+  when: ansible_os_family == 'Solaris'
+
+- include: create-vhosts-directories.yml
+
+- include: create-vhosts-config-files.yml
