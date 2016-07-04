@@ -1,3 +1,5 @@
+---
+dependencies: []
 galaxy_info:
   author: gcoop-libre
   description: Apache 2.x for RHEL/CentOS, Debian/Ubuntu, SLES and Solaris
