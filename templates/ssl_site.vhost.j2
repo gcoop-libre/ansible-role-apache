@@ -36,7 +36,9 @@
 {% if apache_version | version_compare('2.4.11', '>=') %}
   SSLSessionTickets Off
 {% endif %}
+{% if 'socache_shmcb.load' in apache_mods_enabled %}
   SSLUseStapling On
+{% endif %}
 {% endif %}
   SSLCertificateFile {{ item.certificate_file }}
   SSLCertificateKeyFile {{ item.certificate_key_file }}
