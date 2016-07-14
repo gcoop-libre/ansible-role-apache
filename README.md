@@ -218,4 +218,4 @@ GPLv2
 Author Information
 ------------------
 
-This role was created in 2016 by [gcoop Cooperativa de Software Libre](http://gcoop.coop) in 2016.
+This role was created in 2016 by [gcoop Cooperativa de Software Libre](http://gcoop.coop).
