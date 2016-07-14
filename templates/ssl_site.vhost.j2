@@ -7,7 +7,7 @@
 {% endif %}
   DocumentRoot {{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}
 
-{% if item.separate_logs is defined and item.separate_logs %}
+{% if item.separate_logs | default(True) %}
   ErrorLog ${APACHE_LOG_DIR}/{{ item.servername }}.error.log
   CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined
 {% endif %}
@@ -44,7 +44,7 @@
   SSLCertificateChainFile {{ item.certificate_chain_file }}
 {% endif %}
 
-{% if item.deflate is defined and item.deflate %}
+{% if item.deflate | default(True) %}
   SetOutputFilter DEFLATE
 
   BrowserMatch ^Mozilla/4 gzip-only-text/html
@@ -58,7 +58,7 @@
   Header append Vary User-Agent env=!dont-vary
 {% endif %}
 
-{% if item.fileetag is defined and item.fileetag %}
+{% if item.fileetag | default(True) %}
   FileETag MTime Size
 {% endif %}
 
@@ -77,14 +77,14 @@
 {% endif %}
 
 {% if 'rewrite.load' in apache_mods_enabled %}
-{% if item.serveralias is defined or item.custom_rewrites is defined or (item.redirect_to_http is defined and item.redirect_to_http) or item.redirect_to_file is defined %}
+{% if item.serveralias is defined or item.custom_rewrites is defined or item.redirect_to_http | default(False) or item.redirect_to_file is defined %}
     RewriteEngine On
 {% if item.rewrite_base is defined %}
     RewriteBase {{ item.rewrite_base }}
 {% endif %}
 
-{% if item.redirect_to_http and item.redirect_to_http %}
-    RewriteCond %{HTTPS} = On
+{% if item.redirect_to_http | default(False) %}
+    RewriteCond %{HTTPS} !=Off
     RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
