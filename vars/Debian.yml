@@ -10,7 +10,7 @@ __apache_packages:
   - apache2-utils
 
 apache_ports_configuration_commented_items:
-  - regexp: '^\s+Listen '
-    line: '#Listen '
-  - regexp: '^\s+NameVirtualHost '
-    line: '#NameVirtualHost '
+  - regexp: '^([ \t]+)Listen([ \t])'
+    line: '#\1Listen\2'
+  - regexp: '^([ \t]+)NameVirtualHost([ \t])'
+    line: '#\1NameVirtualHost\2'
