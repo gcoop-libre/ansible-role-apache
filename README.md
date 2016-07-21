@@ -99,6 +99,7 @@ You can add or override global Apache configuration settings in the role-provide
         serveradmin: webmaster@localhost
         documentroot: '/var/www/html'
         separate_logs: true
+        frame_options: SAMEORIGIN
         deflate: true
         fileetag: true
         setenvif:
@@ -163,6 +164,10 @@ The are other SSL directives can be managed with other SSL-related role variable
     apache_ssl_cipher_suite: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
 
 The SSL protocols and cipher suites that are used/allowed when clients make secure connections to your server. These are secure/sane defaults, but for maximum security, performand, and/or compatibility, you may need to adjust these settings. You may find some information in [Cipherli.st: Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/).
+
+    apache_frame_options: SAMEORIGIN
+
+This property set the security policy of the sites when they are loaded within a Frame or IFrame. You can check the valid options in [this Wikipedia Article](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Frame-Options). This global configuration can be overrided vhost by vhost.
 
     apache_sts: true
     apache_sts_max_age: '63072000'

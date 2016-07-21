@@ -21,7 +21,7 @@
 {% endif %}
 
   <IfModule mod_headers.c>
-    Header always set X-Frame-Options DENY
+    Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
     Header always set X-Content-Type-Options nosniff
   </IfModule>
 
