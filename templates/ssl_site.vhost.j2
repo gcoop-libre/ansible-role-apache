@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 {# Set up SSL VirtualHosts #}
-{% if apache_ignore_missing_ssl_certificate or apache_ssl_certificates.results[loop.index0].stat.exists %}
+{% if apache_ignore_missing_ssl_certificate or item.certificate_file in apache_ssl_certificates %}
 <VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}>
 {% if item.serveradmin is defined %}
   ServerAdmin {{ item.serveradmin }}

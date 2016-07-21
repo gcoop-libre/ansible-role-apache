@@ -2,5 +2,15 @@
 - name: Check whether certificates defined in vhosts exist.
   stat:
     path: "{{ item.certificate_file }}"
-  register: apache_ssl_certificates
+  register: temp_apache_ssl_certificates
   with_items: "{{ apache_vhosts_ssl }}"
+
+- name: Define empty apache_ssl_certificates variable
+  set_fact:
+    apache_ssl_certificates: []
+
+- name: Add existent certificates to apache_ssl_certificates
+  set_fact:
+    apache_ssl_certificates: "{{ apache_ssl_certificates }} + ['{{ item.stat.path }}']"
+  when: item.stat.exists
+  with_items: "{{ temp_apache_ssl_certificates.results }}"
