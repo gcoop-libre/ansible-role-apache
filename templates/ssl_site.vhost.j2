@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 {# Set up SSL VirtualHosts #}
-{% if apache_ignore_missing_ssl_certificate or apache_ssl_certificates.results[loop.index0].stat.exists %}
+{% if apache_ignore_missing_ssl_certificate or item.certificate_file in apache_ssl_certificates %}
 <VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}>
 {% if item.serveradmin is defined %}
   ServerAdmin {{ item.serveradmin }}
@@ -21,16 +21,20 @@
 {% endfor %}
 {% endif %}
 
+  <IfModule mod_headers.c>
+    Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
+    Header always set X-Content-Type-Options nosniff
+  </IfModule>
+
   SSLEngine On
   SSLCipherSuite {{ apache_ssl_cipher_suite }}
   SSLProtocol {{ apache_ssl_protocol }}
   SSLHonorCipherOrder On
 {% if item.sts | default(apache_sts) %}
-  Header always set Strict-Transport-Security "max-age={{ item.sts_max_age | default(apache_sts_max_age) }}; {% if item.sts_subdomains | default(apache_sts_subdomains) %}includeSubDomains{% endif %}"
+  <IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age={{ item.sts_max_age | default(apache_sts_max_age) }}; {% if item.sts_subdomains | default(apache_sts_subdomains) %}includeSubDomains{% endif %}"
+  </IfModule>
 {% endif %}
-  Header always set X-Frame-Options DENY
-  Header always set X-Content-Type-Options nosniff
-
 {% if apache_vhosts_version == "2.4" %}
   SSLCompression Off
 {% if apache_version | version_compare('2.4.11', '>=') %}
@@ -47,17 +51,22 @@
 {% endif %}
 
 {% if item.deflate | default(True) %}
-  SetOutputFilter DEFLATE
+  <IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+  </IfModule>
 
-  BrowserMatch ^Mozilla/4 gzip-only-text/html
-  BrowserMatch ^Mozilla/4\.0[678] no-gzip
-  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-
-  # Don't compress images and other uncompressible content
-  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
+  <IfModule mod_setenvif.c>
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    # Don't compress images and other uncompressible content
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
+  </IfModule>
 
   # Make sure proxies don't deliver the wrong content
-  Header append Vary User-Agent env=!dont-vary
+  <IfModule mod_headers.c>
+    Header append Vary User-Agent env=!dont-vary
+  </IfModule>
 {% endif %}
 
 {% if item.fileetag | default(True) %}
@@ -72,61 +81,69 @@
 {% endif %}
     Options -Indexes +FollowSymLinks
 {% if apache_vhosts_version == "2.2" %}
-    Order allow,deny
-    Allow from all
+    <IfModule mod_authz_host.c>
+      Order allow,deny
+      Allow from all
+    </IfModule>
 {% else %}
-    Require all granted
+    <IfModule mod_authz_core.c>
+      Require all granted
+    </IfModule>
 {% endif %}
 
 {% if 'rewrite.load' in apache_mods_enabled %}
+    <IfModule mod_rewrite.c>
 {% if item.serveralias is defined or item.custom_rewrites is defined or item.redirect_to_http | default(False) or item.redirect_to_file is defined %}
-    RewriteEngine On
+      RewriteEngine On
 {% if item.rewrite_base is defined %}
-    RewriteBase {{ item.rewrite_base }}
+      RewriteBase {{ item.rewrite_base }}
 {% endif %}
 
 {% if item.redirect_to_http | default(False) %}
-    RewriteCond %{HTTPS} !=Off
-    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+      RewriteCond %{HTTPS} !=Off
+      RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.custom_rewrites is defined %}
 {% for custom_rewrite in item.custom_rewrites %}
 {% if custom_rewrite.conditions is defined %}
 {% for condition in custom_rewrite.conditions %}
-    RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
+      RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
 {% endfor %}
 {% endif %}
-    RewriteRule {{ custom_rewrite.pattern }} {{ custom_rewrite.substitution }} {{ custom_rewrite.flags }}
+      RewriteRule {{ custom_rewrite.pattern }} {{ custom_rewrite.substitution }} {{ custom_rewrite.flags }}
 
 {% endfor %}
 {% endif %}
 
 {% if item.serveralias is defined %}
-    RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
+      RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
 {% if item.exclude_from_redirect is defined %}
 {% for serveralias in item.serveralias %}
 {% if serveralias in item.exclude_from_redirect %}
-    RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
+      RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
 {% endif %}
 {% endfor %}
 {% endif %}
-    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+      RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
 {% endif %}
 
 {% if item.redirect_to_file is defined %}
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . {{ item.redirect_to_file }} [L]
+      RewriteCond %{REQUEST_FILENAME} !-f
+      RewriteCond %{REQUEST_FILENAME} !-d
+      RewriteRule . {{ item.redirect_to_file }} [L]
 {% endif %}
 {% endif %}
+    </IfModule>
 {% endif %}
   </Directory>
 
 {% if item.setenvif is defined %}
+  <IfModule mod_setenvif.c>
 {% for setenvif in item.setenvif %}
-  SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}={{ setenvif.value }}
+    SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}={{ setenvif.value }}
 {% endfor %}
+  </IfModule>
 {% endif %}
 
 {% if item.restricted_access is defined %}
@@ -135,48 +152,54 @@
   <Directory {% if restricted_access.regex %}~{% endif %} "{% if restricted_access.regex %}^{% endif %}{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}{{ restricted_access.path }}">
 {% if restricted_access.ips is defined or restricted_access.hosts is defined or restricted_access.env_variables is defined %}
 {% if apache_vhosts_version == "2.2" %}
-    Order deny,allow
-    Deny from all
+    <IfModule mod_authz_host.c>
+      Order deny,allow
+      Deny from all
 {% if restricted_access.ips is defined %}
 {% for ip in restricted_access.ips %}
-    Allow from {{ ip }}
+      Allow from {{ ip }}
 {% endfor %}
 {% endif %}
 {% if restricted_access.hosts is defined %}
 {% for host in restricted_access.hosts %}
-    Allow from {{ host }}
+      Allow from {{ host }}
 {% endfor %}
 {% endif %}
 {% if restricted_access.env_variables is defined %}
 {% for env_variable in restricted_access.env_variables %}
-    Allow from env={{ env_variable }}
+      Allow from env={{ env_variable }}
 {% endfor %}
 {% endif %}
+    </IfModule>
 {% else %}
+    <IfModule mod_authz_core.c>
 {% if restricted_access.ips is defined %}
 {% for ip in restricted_access.ips %}
-    Require ip {{ ip }}
+      Require ip {{ ip }}
 {% endfor %}
 {% endif %}
 {% if restricted_access.hosts is defined %}
 {% for host in restricted_access.hosts %}
-    Require host {{ host }}
+      Require host {{ host }}
 {% endfor %}
 {% endif %}
 {% if restricted_access.env_variables is defined %}
 {% for env_variable in restricted_access.env_variables %}
-    Require env {{ env_variable }}
+      Require env {{ env_variable }}
 {% endfor %}
 {% endif %}
-    Require all denied
+      Require all denied
+    </IfModule>
 {% endif %}
 {% endif %}
 
 {% if restricted_access.htpasswd is defined %}
-    AuthType Basic
-    AuthName "{{ item.servername }}"
-    AuthUserFile {{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_private_subdir) }}{{ restricted_access.htpasswd }}
-    Require valid-user
+    <IfModule mod_authn_file.c>
+      AuthType Basic
+      AuthName "{{ item.servername }}"
+      AuthUserFile {{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_private_subdir) }}{{ restricted_access.htpasswd }}
+      Require valid-user
+    </IfModule>
 {% endif %}
   </Directory>
 {% endif %}
