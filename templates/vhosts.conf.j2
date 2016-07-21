@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 {{ apache_global_vhost_settings }}
 
+# HTTPoxy
 <IfModule mod_headers.c>
     RequestHeader unset Proxy early
 </IfModule>
@@ -12,7 +13,9 @@ NameVirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}
 {% endif %}
 
 {% if apache_vhosts_version == "2.4" and 'socache_shmcb.load' in apache_mods_enabled %}
-SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
+<IfModule mod_ssl.c>
+  SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
+</IfModule>
 {% endif %}
 {% endif %}
 
