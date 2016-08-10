@@ -91,6 +91,11 @@ On Debian/Ubuntu, a default virtualhost is included in Apache's configuration. S
 
 You can add or override global Apache configuration settings in the role-provided vhosts file (assuming `apache_create_vhosts` is true) using this variable. By default it only sets the DirectoryIndex configuration.
 
+    apache_global_vhost_access_log_format_combined: '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
+    apache_global_vhost_access_log_format_proxy: '%{X-Forwarded-For}i %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
+
+With this properties you can customize the Combined log format and the log format used to log the requests made through a proxy.
+
     apache_vhosts:
       - servername: 'local.dev'
         serveralias:
@@ -99,6 +104,7 @@ You can add or override global Apache configuration settings in the role-provide
         serveradmin: webmaster@localhost
         documentroot: '/var/www/html'
         separate_logs: true
+        separate_logs_proxy_format: true
         frame_options: SAMEORIGIN
         deflate: true
         deflate_dont_vary: User-Agent
