@@ -62,6 +62,7 @@ apache_vhosts:
   #   separate_logs: true
   #   frame_options: SAMEORIGIN
   #   deflate: true
+  #   deflate_dont_vary: User-Agent
   #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
@@ -112,6 +113,7 @@ apache_vhosts_ssl: []
   #   separate_logs: true
   #   frame_options: SAMEORIGIN
   #   deflate: true
+  #   deflate_dont_vary: User-Agent
   #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'

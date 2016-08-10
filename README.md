@@ -101,6 +101,7 @@ You can add or override global Apache configuration settings in the role-provide
         separate_logs: true
         frame_options: SAMEORIGIN
         deflate: true
+        deflate_dont_vary: User-Agent
         fileetag: true
         setenvif:
           - attribute: 'X-Forwarded-For'

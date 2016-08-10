@@ -63,10 +63,12 @@
     SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
   </IfModule>
 
+{% if item.deflate_dont_vary | default('User-Agent') %}
   # Make sure proxies don't deliver the wrong content
   <IfModule mod_headers.c>
-    Header append Vary User-Agent env=!dont-vary
+    Header append Vary {{ item.deflate_dont_vary | default('User-Agent') }} env=!dont-vary
   </IfModule>
+{% endif %}
 {% endif %}
 
 {% if item.fileetag | default(True) %}
