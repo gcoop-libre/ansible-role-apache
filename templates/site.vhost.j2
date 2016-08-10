@@ -8,7 +8,13 @@
 
 {% if item.separate_logs | default(True) %}
   ErrorLog ${APACHE_LOG_DIR}/{{ item.servername }}.error.log
+{% if item.separate_logs_proxy_format | default(True) %}
+  SetEnvIf X-Forwarded-For "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" proxy
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined env=!proxy
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log proxy env=proxy
+{% else %}
   CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined
+{% endif %}
 {% endif %}
 
   ServerName {{ item.servername }}
@@ -38,10 +44,12 @@
     SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g)$ no-gzip dont-vary
   </IfModule>
 
+{% if item.deflate_dont_vary | default('User-Agent') %}
   # Make sure proxies don't deliver the wrong content
   <IfModule mod_headers.c>
-    Header append Vary User-Agent env=!dont-vary
+    Header append Vary {{ item.deflate_dont_vary | default('User-Agent') }} env=!dont-vary
   </IfModule>
+{% endif %}
 {% endif %}
 
 {% if item.fileetag | default(True) %}

@@ -1,6 +1,9 @@
 # {{ ansible_managed }}
 {{ apache_global_vhost_settings }}
 
+LogFormat "{{ apache_global_vhost_access_log_format_combined }}" combined
+LogFormat "{{ apache_global_vhost_access_log_format_proxy }}" proxy
+
 # HTTPoxy
 <IfModule mod_headers.c>
     RequestHeader unset Proxy early

@@ -49,6 +49,9 @@ apache_remove_default_vhost: false
 apache_global_vhost_settings: |
   DirectoryIndex index.php index.html index.htm
 
+apache_global_vhost_access_log_format_combined: '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
+apache_global_vhost_access_log_format_proxy: '%{X-Forwarded-For}i %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
+
 apache_vhosts:
   - servername: 'local.dev'
     documentroot: '/var/www/html'
@@ -60,8 +63,10 @@ apache_vhosts:
   #   serveradmin: webmaster@localhost
   #   documentroot: '/var/www/html'
   #   separate_logs: true
+  #   separate_logs_proxy_format: true
   #   frame_options: SAMEORIGIN
   #   deflate: true
+  #   deflate_dont_vary: User-Agent
   #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
@@ -110,8 +115,10 @@ apache_vhosts_ssl: []
   #   sts_max_age: '63072000'
   #   sts_subdomains: true
   #   separate_logs: true
+  #   separate_logs_proxy_format: true
   #   frame_options: SAMEORIGIN
   #   deflate: true
+  #   deflate_dont_vary: User-Agent
   #   fileetag: true
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
