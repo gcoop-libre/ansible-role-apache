@@ -54,6 +54,11 @@ apache_global_vhost_settings: |
 apache_global_vhost_access_log_format_combined: '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
 apache_global_vhost_access_log_format_proxy: '%{X-Forwarded-For}i %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
 
+apache_global_vhost_aliases: []
+  # Available properties
+  # - name: alias-url
+  #   dest: alias-path
+
 apache_vhosts:
   - servername: 'local.dev'
     documentroot: '/var/www/html'
@@ -70,6 +75,9 @@ apache_vhosts:
   #   deflate: true
   #   deflate_dont_vary: User-Agent
   #   fileetag: true
+  #   aliases:
+  #     - name: alias-url
+  #       dest: alias-path
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'
@@ -122,6 +130,9 @@ apache_vhosts_ssl: []
   #   deflate: true
   #   deflate_dont_vary: User-Agent
   #   fileetag: true
+  #   aliases:
+  #     - name: alias-url
+  #       dest: alias-path
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'

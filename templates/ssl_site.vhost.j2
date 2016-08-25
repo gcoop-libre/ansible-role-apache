@@ -81,6 +81,14 @@
   FileETag MTime Size
 {% endif %}
 
+{% if item.aliases | default([]) %}
+  <IfModule mod_alias.c>
+{% for alias in item.aliases %}
+    Alias "{{ alias.name }}" "{{ alias.dest }}"
+{% endfor %}
+  </IfModule>
+{% endif %}
+
   <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}">
 {% if item.allowoverride is defined %}
     AllowOverride {{ item.allowoverride }}

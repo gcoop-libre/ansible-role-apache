@@ -4,9 +4,17 @@
 LogFormat "{{ apache_global_vhost_access_log_format_combined }}" combined
 LogFormat "{{ apache_global_vhost_access_log_format_proxy }}" proxy
 
+{% if apache_global_vhost_aliases %}
+<IfModule mod_alias.c>
+{% for alias in apache_global_vhost_aliases %}
+  Alias "{{ alias.name }}" "{{ alias.dest }}"
+{% endfor %}
+</IfModule>
+{% endif %}
+
 # HTTPoxy
 <IfModule mod_headers.c>
-    RequestHeader unset Proxy early
+  RequestHeader unset Proxy early
 </IfModule>
 
 {% if 'ssl.load' in apache_mods_enabled %}

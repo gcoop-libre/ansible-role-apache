@@ -100,6 +100,12 @@ You can add or override global Apache configuration settings in the role-provide
 
 With this properties you can customize the Combined log format and the log format used to log the requests made through a proxy.
 
+    apache_global_vhost_aliases:
+      - name: /images
+        dest: /var/www/images
+
+List of aliases to add on vhost.conf. There will be available to all the Virtual Hosts. `apache_create_vhosts` should be enabled.
+
     apache_vhosts:
       - servername: 'local.dev'
         serveralias:
@@ -113,6 +119,9 @@ With this properties you can customize the Combined log format and the log forma
         deflate: true
         deflate_dont_vary: User-Agent
         fileetag: true
+        aliases:
+          - name: alias-url
+            dest: alias-path
         setenvif:
           - attribute: 'X-Forwarded-For'
             pattern: '(.*)'
