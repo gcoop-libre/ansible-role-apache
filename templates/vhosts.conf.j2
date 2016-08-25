@@ -12,6 +12,12 @@ LogFormat "{{ apache_global_vhost_access_log_format_proxy }}" proxy
 </IfModule>
 {% endif %}
 
+{% if apache_global_vhost_custom_errors %}
+{% for custom_error in apache_global_vhost_custom_errors %}
+ErrorDocument "{{ custom_error.code }}" "{{ custom_error.action }}"
+{% endfor %}
+{% endif %}
+
 # HTTPoxy
 <IfModule mod_headers.c>
   RequestHeader unset Proxy early

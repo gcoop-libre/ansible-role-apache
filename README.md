@@ -106,6 +106,12 @@ With this properties you can customize the Combined log format and the log forma
 
 List of aliases to add on vhost.conf. There will be available to all the Virtual Hosts. `apache_create_vhosts` should be enabled.
 
+    apache_global_vhost_custom_errors:
+      - code: error-code
+        action: error-action
+
+Customizations for the Apache error pages. You can read about the `action` values on [Apache documentation](https://httpd.apache.org/docs/2.4/custom-error.html).
+
     apache_vhosts:
       - servername: 'local.dev'
         serveralias:
@@ -115,6 +121,9 @@ List of aliases to add on vhost.conf. There will be available to all the Virtual
         documentroot: '/var/www/html'
         separate_logs: true
         separate_logs_proxy_format: true
+        custom_errors:
+          - code: error-code
+            action: error-action
         frame_options: SAMEORIGIN
         deflate: true
         deflate_dont_vary: User-Agent

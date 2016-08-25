@@ -26,6 +26,12 @@
 {% endfor %}
 {% endif %}
 
+{% if item.custom_errors | default([]) %}
+{% for custom_error in item.custom_errors %}
+  ErrorDocument "{{ custom_error.code }}" "{{ custom_error.action }}"
+{% endfor %}
+{% endif %}
+
   <IfModule mod_headers.c>
     Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
     Header always set X-Content-Type-Options nosniff

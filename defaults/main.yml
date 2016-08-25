@@ -59,6 +59,11 @@ apache_global_vhost_aliases: []
   # - name: alias-url
   #   dest: alias-path
 
+apache_global_vhost_custom_errors: []
+  # Available properties
+  # - code: error-code
+  #   action: error-action
+
 apache_vhosts:
   - servername: 'local.dev'
     documentroot: '/var/www/html'
@@ -71,6 +76,9 @@ apache_vhosts:
   #   documentroot: '/var/www/html'
   #   separate_logs: true
   #   separate_logs_proxy_format: true
+  #   custom_errors:
+  #     - code: error-code
+  #       action: error-action
   #   frame_options: SAMEORIGIN
   #   deflate: true
   #   deflate_dont_vary: User-Agent
@@ -126,6 +134,9 @@ apache_vhosts_ssl: []
   #   sts_subdomains: true
   #   separate_logs: true
   #   separate_logs_proxy_format: true
+  #   custom_errors:
+  #     - code: error-code
+  #       action: error-action
   #   frame_options: SAMEORIGIN
   #   deflate: true
   #   deflate_dont_vary: User-Agent
