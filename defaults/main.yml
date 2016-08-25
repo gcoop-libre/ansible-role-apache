@@ -34,6 +34,8 @@ apache_event_max_requests_per_child: 0
 apache_event_thread_limit: 64
 apache_event_threads_per_child: 25
 
+apache_remove_default_aliases: True
+
 apache_base_dir: '/var/www'
 apache_web_subdir: 'web'
 apache_ssl_subdir: 'ssl'
@@ -52,6 +54,16 @@ apache_global_vhost_settings: |
 apache_global_vhost_access_log_format_combined: '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
 apache_global_vhost_access_log_format_proxy: '%{X-Forwarded-For}i %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"'
 
+apache_global_vhost_aliases: []
+  # Available properties
+  # - name: alias-url
+  #   dest: alias-path
+
+apache_global_vhost_custom_errors: []
+  # Available properties
+  # - code: error-code
+  #   action: error-action
+
 apache_vhosts:
   - servername: 'local.dev'
     documentroot: '/var/www/html'
@@ -64,10 +76,16 @@ apache_vhosts:
   #   documentroot: '/var/www/html'
   #   separate_logs: true
   #   separate_logs_proxy_format: true
+  #   custom_errors:
+  #     - code: error-code
+  #       action: error-action
   #   frame_options: SAMEORIGIN
   #   deflate: true
   #   deflate_dont_vary: User-Agent
   #   fileetag: true
+  #   aliases:
+  #     - name: alias-url
+  #       dest: alias-path
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'
@@ -116,10 +134,16 @@ apache_vhosts_ssl: []
   #   sts_subdomains: true
   #   separate_logs: true
   #   separate_logs_proxy_format: true
+  #   custom_errors:
+  #     - code: error-code
+  #       action: error-action
   #   frame_options: SAMEORIGIN
   #   deflate: true
   #   deflate_dont_vary: User-Agent
   #   fileetag: true
+  #   aliases:
+  #     - name: alias-url
+  #       dest: alias-path
   #   setenvif:
   #     - attribute: 'X-Forwarded-For'
   #       pattern: '(.*)'

@@ -62,6 +62,10 @@ The configuration of the MPM Worker module. This is only available for Apache 2.
 
 The configuration of the MPM Event module. This is only available for Apache 2.4 on Debian GNU/Linux.
 
+    apache_remove_default_aliases: True
+
+Remove the default aliases that comes with default Apache configuration.
+
     apache_base_dir: '/var/www'
 
 The base directory where the web sites would be allocated. This value is used with the next three to generate the Document Root for the Virtual Hosts that hasn't an explicit Document Root.
@@ -96,6 +100,18 @@ You can add or override global Apache configuration settings in the role-provide
 
 With this properties you can customize the Combined log format and the log format used to log the requests made through a proxy.
 
+    apache_global_vhost_aliases:
+      - name: /images
+        dest: /var/www/images
+
+List of aliases to add on vhost.conf. There will be available to all the Virtual Hosts. `apache_create_vhosts` should be enabled.
+
+    apache_global_vhost_custom_errors:
+      - code: error-code
+        action: error-action
+
+Customizations for the Apache error pages. You can read about the `action` values on [Apache documentation](https://httpd.apache.org/docs/2.4/custom-error.html).
+
     apache_vhosts:
       - servername: 'local.dev'
         serveralias:
@@ -105,10 +121,16 @@ With this properties you can customize the Combined log format and the log forma
         documentroot: '/var/www/html'
         separate_logs: true
         separate_logs_proxy_format: true
+        custom_errors:
+          - code: error-code
+            action: error-action
         frame_options: SAMEORIGIN
         deflate: true
         deflate_dont_vary: User-Agent
         fileetag: true
+        aliases:
+          - name: alias-url
+            dest: alias-path
         setenvif:
           - attribute: 'X-Forwarded-For'
             pattern: '(.*)'

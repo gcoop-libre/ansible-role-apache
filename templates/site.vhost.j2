@@ -26,6 +26,12 @@
 {% endfor %}
 {% endif %}
 
+{% if item.custom_errors | default([]) %}
+{% for custom_error in item.custom_errors %}
+  ErrorDocument "{{ custom_error.code }}" "{{ custom_error.action }}"
+{% endfor %}
+{% endif %}
+
   <IfModule mod_headers.c>
     Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
     Header always set X-Content-Type-Options nosniff
@@ -54,6 +60,14 @@
 
 {% if item.fileetag | default(True) %}
   FileETag MTime Size
+{% endif %}
+
+{% if item.aliases | default([]) %}
+  <IfModule mod_alias.c>
+{% for alias in item.aliases %}
+    Alias "{{ alias.name }}" "{{ alias.dest }}"
+{% endfor %}
+  </IfModule>
 {% endif %}
 
   <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_web_subdir) }}">

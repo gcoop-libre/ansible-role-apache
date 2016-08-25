@@ -105,6 +105,14 @@
   notify: restart apache
   when: apache_vhosts_version == '2.4' and item.insertbefore is defined
 
+- name: Disable default aliases.
+  replace:
+    dest: "{{ apache_server_root }}/mods-available/alias.conf"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  with_items: "{{ apache_alias_configuration_commented_items }}"
+  notify: restart apache
+
 - name: Configure Apache Security.
   lineinfile:
     dest: "{{ apache_server_root }}/conf.d/security"

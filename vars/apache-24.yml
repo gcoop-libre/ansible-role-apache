@@ -32,7 +32,6 @@ apache_mpm_prefork_configuration_items:
   - regexp: '^([ \t]*)ServerLimit[ \t]'
     line: 'ServerLimit {{ apache_prefork_server_limit }}'
     insertbefore: '^([ \t]*)MaxRequestWorkers[ \t]'
-
 apache_mpm_worker_configuration_items:
   - regexp: '^([ \t]*)StartServers(.*)$'
     line: '\1StartServers {{ apache_worker_start_servers }}'
@@ -71,3 +70,6 @@ apache_mpm_event_configuration_items:
   - regexp: '^([ \t]*)ThreadLimit[ \t]'
     line: 'ThreadLimit {{ apache_event_thread_limit }}'
     insertbefore: '^([ \t]*)ThreadsPerChild[ \t]'
+apache_alias_configuration_commented_items:
+  - regexp: '^([ \t]+)Alias([ \t]+)\/icons\/([ \t])'
+    line: '#\1Alias\2/icons/\3'
