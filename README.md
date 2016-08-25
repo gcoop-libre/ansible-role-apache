@@ -62,6 +62,10 @@ The configuration of the MPM Worker module. This is only available for Apache 2.
 
 The configuration of the MPM Event module. This is only available for Apache 2.4 on Debian GNU/Linux.
 
+    apache_remove_default_aliases: True
+
+Remove the default aliases that comes with default Apache configuration.
+
     apache_base_dir: '/var/www'
 
 The base directory where the web sites would be allocated. This value is used with the next three to generate the Document Root for the Virtual Hosts that hasn't an explicit Document Root.

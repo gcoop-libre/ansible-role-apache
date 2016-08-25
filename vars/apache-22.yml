@@ -72,3 +72,6 @@ apache_mpm_event_configuration_items:
   - regexp: '^([ \t]*)ThreadLimit[ \t]'
     line: 'ThreadLimit {{ apache_event_thread_limit }}'
     insertbefore: '^([ \t]*)ThreadsPerChild[ \t]'
+apache_alias_configuration_commented_items:
+  - regexp: '^([ \t]+)Alias([ \t]+)\/icons\/([ \t])'
+    line: '#\1Alias\2/icons/\3'

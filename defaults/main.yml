@@ -34,6 +34,8 @@ apache_event_max_requests_per_child: 0
 apache_event_thread_limit: 64
 apache_event_threads_per_child: 25
 
+apache_remove_default_aliases: True
+
 apache_base_dir: '/var/www'
 apache_web_subdir: 'web'
 apache_ssl_subdir: 'ssl'
