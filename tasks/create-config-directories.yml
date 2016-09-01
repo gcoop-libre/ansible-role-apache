@@ -10,7 +10,7 @@
 
 - name: Create sites-enabled directory
   file:
-    dest: {{ apache_server_root }}/sites-enabled
+    dest: "{{ apache_server_root }}/sites-enabled"
     owner: root
     group: root
     mode: '0755'
