@@ -153,6 +153,7 @@ Customizations for the Apache error pages. You can read about the `action` value
         restricted_access:
           - path: '/secret'
             regex: false
+            all: false
             ips:
               - '127.0.0.1'
               - '192.168.0.1'
