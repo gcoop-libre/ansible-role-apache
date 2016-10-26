@@ -108,6 +108,7 @@ apache_vhosts:
   #   restricted_access:
   #     - path: '/secret'
   #       regex: false
+  #       all: false
   #       ips:
   #         - '127.0.0.1'
   #         - '192.168.0.1'
@@ -166,6 +167,7 @@ apache_vhosts_ssl: []
   #   restricted_access:
   #     - path: '/secret'
   #       regex: false
+  #       all: false
   #       ips:
   #         - '127.0.0.1'
   #         - '192.168.0.1'

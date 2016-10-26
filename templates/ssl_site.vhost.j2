@@ -172,11 +172,12 @@
 {% for restricted_access in item.restricted_access %}
 {% if restricted_access.path is defined %}
   <Directory {% if restricted_access.regex %}~{% endif %} "{% if restricted_access.regex %}^{% endif %}{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}{{ restricted_access.path }}">
-{% if restricted_access.ips is defined or restricted_access.hosts is defined or restricted_access.env_variables is defined %}
+{% if restricted_access.all | default(False) or restricted_access.ips is defined or restricted_access.hosts is defined or restricted_access.env_variables is defined %}
 {% if apache_vhosts_version == "2.2" %}
     <IfModule mod_authz_host.c>
       Order deny,allow
       Deny from all
+{% if not restricted_access.all | default(False) %}
 {% if restricted_access.ips is defined %}
 {% for ip in restricted_access.ips %}
       Allow from {{ ip }}
@@ -192,9 +193,11 @@
       Allow from env={{ env_variable }}
 {% endfor %}
 {% endif %}
+{% endif %}
     </IfModule>
 {% else %}
     <IfModule mod_authz_core.c>
+{% if not restricted_access.all | default(False) %}
 {% if restricted_access.ips is defined %}
 {% for ip in restricted_access.ips %}
       Require ip {{ ip }}
@@ -209,6 +212,7 @@
 {% for env_variable in restricted_access.env_variables %}
       Require env {{ env_variable }}
 {% endfor %}
+{% endif %}
 {% endif %}
       Require all denied
     </IfModule>
