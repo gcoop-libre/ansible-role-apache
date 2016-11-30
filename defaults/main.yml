@@ -102,6 +102,7 @@ apache_vhosts:
   #         - test_string: '%{HTTP_HOST}'
   #           pattern: '^old\.site\.com$'
   #           flags: '[NC]'
+  #   redirect_to_servername: True
   #   exclude_from_redirect:
   #     - 'valid.alias.com'
   #   redirect_to_file: '/index.php'
@@ -161,6 +162,7 @@ apache_vhosts_ssl: []
   #         - test_string: '%{HTTP_HOST}'
   #           pattern: '^old\.site\.com$'
   #           flags: '[NC]'
+  #   redirect_to_servername: True
   #   exclude_from_redirect:
   #     - 'valid.alias.com'
   #   redirect_to_file: '/index.php'
