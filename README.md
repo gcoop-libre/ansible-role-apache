@@ -147,6 +147,7 @@ Customizations for the Apache error pages. You can read about the `action` value
               - test_string: '%{HTTP_HOST}'
                 pattern: '^old\.site\.com$'
                 flags: '[NC]'
+        redirect_to_servername: True
         exclude_from_redirect:
           - 'valid.alias.com'
         redirect_to_file: '/index.php'

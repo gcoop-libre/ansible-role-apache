@@ -138,6 +138,7 @@
 {% endfor %}
 {% endif %}
 
+{% if item.redirect_to_servername | default(True) %}
 {% if item.serveralias is defined %}
       RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
 {% if item.exclude_from_redirect is defined %}
@@ -148,6 +149,7 @@
 {% endfor %}
 {% endif %}
       RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+{% endif %}
 {% endif %}
 
 {% if item.redirect_to_file is defined %}
