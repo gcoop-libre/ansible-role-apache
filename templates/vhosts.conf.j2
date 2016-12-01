@@ -23,13 +23,13 @@ ErrorDocument "{{ custom_error.code }}" "{{ custom_error.action }}"
   RequestHeader unset Proxy early
 </IfModule>
 
-{% if 'ssl.load' in apache_mods_enabled %}
+{% if 'ssl' in apache_mods_enabled %}
 Listen {{ apache_listen_port_ssl }}
 {% if apache_vhosts_version == "2.2" %}
 NameVirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}
 {% endif %}
 
-{% if apache_vhosts_version == "2.4" and 'socache_shmcb.load' in apache_mods_enabled %}
+{% if apache_vhosts_version == "2.4" and 'socache_shmcb' in apache_mods_enabled %}
 <IfModule mod_ssl.c>
   SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
 </IfModule>
