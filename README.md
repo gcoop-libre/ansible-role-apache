@@ -207,11 +207,11 @@ This property set the security policy of the sites when they are loaded within a
 HTTP Strict Transport Security is enabled by default, with a Max Age of 1 year and the subdomains are included. This global configurations can be overrided vhost by vhost.
 
     apache_mods_enabled:
-      - rewrite.load
-      - ssl.load
+      - rewrite
+      - ssl
     apache_mods_disabled: []
 
-This properties are for Debian and Ubuntu ONLY. Which Apache mods to enable or disable (these will be symlinked into the appropriate location). See the `mods-available` directory inside the apache configuration directory (`/etc/apache2/mods-available` by default) for all the available mods.
+This properties are for Debian and Ubuntu ONLY. Which Apache mods to enable or disable. See the `mods-available` directory inside the apache configuration directory (`/etc/apache2/mods-available` by default) for all the available mods.
 
     apache_packages:
       - [platform-specific]

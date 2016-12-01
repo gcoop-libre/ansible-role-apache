@@ -52,7 +52,7 @@
 {% if apache_version | version_compare('2.4.11', '>=') %}
   SSLSessionTickets Off
 {% endif %}
-{% if 'socache_shmcb.load' in apache_mods_enabled %}
+{% if 'socache_shmcb' in apache_mods_enabled %}
   SSLUseStapling On
 {% endif %}
 {% endif %}
@@ -113,7 +113,7 @@
     </IfModule>
 {% endif %}
 
-{% if 'rewrite.load' in apache_mods_enabled %}
+{% if 'rewrite' in apache_mods_enabled %}
     <IfModule mod_rewrite.c>
 {% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_http | default(False) or item.redirect_to_file is defined %}
       RewriteEngine On

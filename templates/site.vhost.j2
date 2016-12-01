@@ -88,7 +88,7 @@
     </IfModule>
 {% endif %}
 
-{% if 'rewrite.load' in apache_mods_enabled %}
+{% if 'rewrite' in apache_mods_enabled %}
     <IfModule mod_rewrite.c>
 {% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_https | default(False) or item.redirect_to_file is defined %}
       RewriteEngine On

@@ -193,11 +193,10 @@ apache_sts_subdomains: true
 
 # Only used on Debian/Ubuntu.
 apache_mods_enabled:
-  - headers.load
-  - rewrite.load
-  - socache_shmcb.load
-  - ssl.conf
-  - ssl.load
+  - headers
+  - rewrite
+  - socache_shmcb
+  - ssl
 apache_mods_disabled: []
 
 # Set initial apache state. Recommended values: `started` or `stopped`
