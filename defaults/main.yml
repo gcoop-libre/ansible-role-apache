@@ -166,6 +166,7 @@ apache_vhosts_ssl: []
   #   exclude_from_redirect:
   #     - 'valid.alias.com'
   #   redirect_to_file: '/index.php'
+  #   include_htaccess: False
   #   restricted_access:
   #     - path: '/secret'
   #       regex: false

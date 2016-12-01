@@ -151,6 +151,7 @@ Customizations for the Apache error pages. You can read about the `action` value
         exclude_from_redirect:
           - 'valid.alias.com'
         redirect_to_file: '/index.php'
+        include_htaccess: False
         restricted_access:
           - path: '/secret'
             regex: false

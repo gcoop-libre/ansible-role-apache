@@ -158,6 +158,14 @@
 {% endif %}
     </IfModule>
 {% endif %}
+
+{% if item.include_htaccess %}
+{% if apache_vhosts_version == "2.4" %}
+    IncludeOptional "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}/.htaccess"
+{% else %}
+    Include "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}/.htaccess"
+{% endif %}
+{% endif %}
   </Directory>
 
 {% if item.setenvif is defined %}
