@@ -95,6 +95,44 @@
   </IfModule>
 {% endif %}
 
+{% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_http | default(False) %}
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+{% if item.rewrite_base is defined %}
+    RewriteBase {{ item.rewrite_base }}
+{% endif %}
+
+{% if item.redirect_to_http | default(False) %}
+    RewriteCond %{HTTPS} !=Off
+    RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+{% endif %}
+
+{% if item.custom_rewrites is defined %}
+{% for custom_rewrite in item.custom_rewrites %}
+{% if custom_rewrite.conditions is defined %}
+{% for condition in custom_rewrite.conditions %}
+    RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
+{% endfor %}
+{% endif %}
+    RewriteRule {{ custom_rewrite.pattern }} {{ custom_rewrite.substitution }} {{ custom_rewrite.flags }}
+
+{% endfor %}
+{% endif %}
+
+{% if item.redirect_to_servername | default(True) and item.serveralias is defined %}
+    RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
+{% if item.exclude_from_redirect is defined %}
+{% for serveralias in item.serveralias %}
+{% if serveralias in item.exclude_from_redirect %}
+    RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
+{% endif %}
+{% endfor %}
+{% endif %}
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
+{% endif %}
+  </IfModule>
+{% endif %}
+
   <Directory "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_ssl_subdir) }}">
 {% if item.allowoverride is defined %}
     AllowOverride {{ item.allowoverride }}
@@ -113,49 +151,11 @@
     </IfModule>
 {% endif %}
 
-{% if 'rewrite' in apache_mods_enabled %}
-    <IfModule mod_rewrite.c>
-{% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_http | default(False) or item.redirect_to_file is defined %}
-      RewriteEngine On
-{% if item.rewrite_base is defined %}
-      RewriteBase {{ item.rewrite_base }}
-{% endif %}
-
-{% if item.redirect_to_http | default(False) %}
-      RewriteCond %{HTTPS} !=Off
-      RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
-{% endif %}
-
-{% if item.custom_rewrites is defined %}
-{% for custom_rewrite in item.custom_rewrites %}
-{% if custom_rewrite.conditions is defined %}
-{% for condition in custom_rewrite.conditions %}
-      RewriteCond {{ condition.test_string }} {{ condition.pattern }} {{ condition.flags }}
-{% endfor %}
-{% endif %}
-      RewriteRule {{ custom_rewrite.pattern }} {{ custom_rewrite.substitution }} {{ custom_rewrite.flags }}
-
-{% endfor %}
-{% endif %}
-
-{% if item.redirect_to_servername | default(True) and item.serveralias is defined %}
-      RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
-{% if item.exclude_from_redirect is defined %}
-{% for serveralias in item.serveralias %}
-{% if serveralias in item.exclude_from_redirect %}
-      RewriteCond %{HTTP_HOST} !^{{ serveralias | replace('.', '\.') }}$ [NC]
-{% endif %}
-{% endfor %}
-{% endif %}
-      RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
-{% endif %}
-
 {% if item.redirect_to_file is defined %}
+    <IfModule mod_rewrite.c>
       RewriteCond %{REQUEST_FILENAME} !-f
       RewriteCond %{REQUEST_FILENAME} !-d
       RewriteRule . {{ item.redirect_to_file }} [L]
-{% endif %}
-{% endif %}
     </IfModule>
 {% endif %}
 
