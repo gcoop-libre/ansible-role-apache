@@ -142,6 +142,10 @@
     Include "{{ item.documentroot | default(apache_base_dir + '/' + item.servername + '/' + apache_web_subdir) }}/.htaccess"
 {% endif %}
 {% endif %}
+
+{% if item.documentroot_extra_parameters is defined %}
+  {{ item.documentroot_extra_parameters }}
+{% endif %}
   </Directory>
 
 {% if item.setenvif is defined %}

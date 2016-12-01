@@ -152,6 +152,7 @@ Customizations for the Apache error pages. You can read about the `action` value
           - 'valid.alias.com'
         redirect_to_file: '/index.php'
         include_htaccess: False
+        documentroot_extra_parameters: 'Custom Document Root configuration'
         restricted_access:
           - path: '/secret'
             regex: false
