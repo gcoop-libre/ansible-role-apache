@@ -90,7 +90,7 @@
 
 {% if 'rewrite.load' in apache_mods_enabled %}
     <IfModule mod_rewrite.c>
-{% if item.serveralias is defined or item.custom_rewrites is defined or item.redirect_to_https | default(False) or item.redirect_to_file is defined %}
+{% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_https | default(False) or item.redirect_to_file is defined %}
       RewriteEngine On
 {% if item.rewrite_base is defined %}
       RewriteBase {{ item.rewrite_base }}
@@ -113,8 +113,7 @@
 {% endfor %}
 {% endif %}
 
-{% if item.redirect_to_servername | default(True) %}
-{% if item.serveralias is defined %}
+{% if item.redirect_to_servername | default(True) and item.serveralias is defined %}
       RewriteCond %{HTTP_HOST} !^{{ item.servername | replace('.', '\.') }}$ [NC]
 {% if item.exclude_from_redirect is defined %}
 {% for serveralias in item.serveralias %}
@@ -124,7 +123,6 @@
 {% endfor %}
 {% endif %}
       RewriteRule ^ http://%{SERVER_NAME}%{REQUEST_URI}%{QUERY_STRING} [R=301,L]
-{% endif %}
 {% endif %}
 
 {% if item.redirect_to_file is defined %}
