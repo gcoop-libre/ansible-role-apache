@@ -191,6 +191,10 @@ No SSL vhosts are configured by default, but you can add them using the same pat
 
 These first three properties set the certificates path. The next three allow the override of the global STS configuration. The last one redirects all the requests to the HTTP host.
 
+    apache_vhosts_ordered: False
+
+This property force Apache to load the Virtual Hosts in the order they appear in the `apache_vhosts` and `apache_vhosts_ssl` lists. Otherwise Apache processes the config files alphabetically.
+
 The are other SSL directives can be managed with other SSL-related role variables.
 
     apache_ssl_protocol: 'All -SSLv2 -SSLv3'

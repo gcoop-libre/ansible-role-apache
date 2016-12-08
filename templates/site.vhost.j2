@@ -151,7 +151,7 @@
 {% if item.setenvif is defined %}
   <IfModule mod_setenvif.c>
 {% for setenvif in item.setenvif %}
-    SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}={{ setenvif.value }}
+    SetEnvIf {{ setenvif.attribute }} {{ setenvif.pattern }} {{ setenvif.var }}{% if setenvif.value is defined %}={{ setenvif.value }}{% endif %} 
 {% endfor %}
   </IfModule>
 {% endif %}

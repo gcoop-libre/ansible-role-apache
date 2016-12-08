@@ -106,6 +106,8 @@ apache_vhosts:
   #   exclude_from_redirect:
   #     - 'valid.alias.com'
   #   redirect_to_file: '/index.php'
+  #   include_htaccess: False
+  #   documentroot_extra_parameters: 'Custom Document Root configuration'
   #   restricted_access:
   #     - path: '/secret'
   #       regex: false
@@ -181,6 +183,8 @@ apache_vhosts_ssl: []
   #         - 'ENV_VAR'
   #       htpasswd: '/.htpasswd'
   #   extra_parameters: 'Custom VHost configuration'
+
+apache_vhosts_ordered: False
 
 apache_ignore_missing_ssl_certificate: true
 
