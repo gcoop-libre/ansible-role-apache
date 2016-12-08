@@ -17,7 +17,16 @@
     state: link
   with_items: "{{ apache_vhosts }}"
   notify: restart apache
-  when: apache_create_vhosts
+  when: apache_create_vhosts and not apache_vhosts_ordered
+
+- name: Add sites symlink in sites-enabled (With index).
+  file:
+    src: "{{ apache_conf_path }}/sites-available/{{ item.1.servername }}.vhost"
+    dest: "{{ apache_conf_path }}/sites-enabled/{{ '%05d' | format(item.0) }}-{{ item.1.servername }}.vhost.conf"
+    state: link
+  with_indexed_items: "{{ apache_vhosts }}"
+  notify: restart apache
+  when: apache_create_vhosts and apache_vhosts_ordered
 
 - name: Add apache SSL sites configuration files.
   template:

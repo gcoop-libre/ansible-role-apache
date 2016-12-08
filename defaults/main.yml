@@ -184,6 +184,8 @@ apache_vhosts_ssl: []
   #       htpasswd: '/.htpasswd'
   #   extra_parameters: 'Custom VHost configuration'
 
+apache_vhosts_ordered: False
+
 apache_ignore_missing_ssl_certificate: true
 
 apache_ssl_protocol: 'All -SSLv2 -SSLv3'
