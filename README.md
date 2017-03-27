@@ -204,7 +204,7 @@ The SSL protocols and cipher suites that are used/allowed when clients make secu
 
     apache_frame_options: SAMEORIGIN
 
-This property set the security policy of the sites when they are loaded within a Frame or IFrame. You can check the valid options in [this Wikipedia Article](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Frame-Options). This global configuration can be overrided vhost by vhost.
+This property set the security policy of the sites when they are loaded within a Frame or IFrame. You can check the valid options in [this Wikipedia Article](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Frame-Options). You can also use `False` or `no` here to skip setting the header altogether. This global configuration can be overrided vhost by vhost.
 
     apache_sts: true
     apache_sts_max_age: '63072000'

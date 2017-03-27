@@ -34,7 +34,9 @@
 {% endif %}
 
   <IfModule mod_headers.c>
+{% if item.frame_options | default(apache_frame_options) != False %}
     Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
+{% endif %}
     Header always set X-Content-Type-Options nosniff
   </IfModule>
 
