@@ -46,7 +46,7 @@
     state: link
   with_items: "{{ apache_vhosts_ssl }}"
   notify: restart apache
-  when: apache_create_vhosts and item.enabled | default(True) and not apache_vhosts_ordered
+  when: apache_create_vhosts and item.enabled | default(True) and not apache_vhosts_ordered and (apache_ignore_missing_ssl_certificate or item.certificate_file in apache_ssl_certificates)
 
 - name: Add SSL sites symlink in sites-enabled (With index).
   file:
@@ -55,4 +55,4 @@
     state: link
   with_indexed_items: "{{ apache_vhosts_ssl }}"
   notify: restart apache
-  when: apache_create_vhosts and item.enabled | default(True) and apache_vhosts_ordered
+  when: apache_create_vhosts and item.enabled | default(True) and apache_vhosts_ordered and (apache_ignore_missing_ssl_certificate or item.certificate_file in apache_ssl_certificates)
