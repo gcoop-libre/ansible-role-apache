@@ -74,6 +74,7 @@ apache_vhosts:
   #     - 'alias2.local'
   #   serveradmin: webmaster@localhost
   #   documentroot: '/var/www/html'
+  #   enabled: true
   #   separate_logs: true
   #   separate_logs_proxy_format: true
   #   custom_errors:
@@ -136,6 +137,7 @@ apache_vhosts_ssl: []
   #   sts: true
   #   sts_max_age: '63072000'
   #   sts_subdomains: true
+  #   enabled: true
   #   separate_logs: true
   #   separate_logs_proxy_format: true
   #   custom_errors:

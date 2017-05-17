@@ -119,6 +119,7 @@ Customizations for the Apache error pages. You can read about the `action` value
           - 'alias2.local'
         serveradmin: webmaster@localhost
         documentroot: '/var/www/html'
+        enabled: true
         separate_logs: true
         separate_logs_proxy_format: true
         custom_errors:
