@@ -1,6 +1,5 @@
 # {{ ansible_managed }}
 {# Set up SSL VirtualHosts #}
-{% if apache_ignore_missing_ssl_certificate or item.certificate_file in apache_ssl_certificates %}
 <VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port_ssl }}>
 {% if item.serveradmin is defined %}
   ServerAdmin {{ item.serveradmin }}
@@ -34,7 +33,9 @@
 {% endif %}
 
   <IfModule mod_headers.c>
+{% if item.frame_options | default(apache_frame_options) != False %}
     Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
+{% endif %}
     Header always set X-Content-Type-Options nosniff
   </IfModule>
 
@@ -248,5 +249,3 @@
   {{ item.extra_parameters }}
 {% endif %}
 </VirtualHost>
-
-{% endif %}

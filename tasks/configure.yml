@@ -15,3 +15,5 @@
 - include: create-vhosts-directories.yml
 
 - include: create-vhosts-config-files.yml
+  static: false
+  when: apache_create_vhosts

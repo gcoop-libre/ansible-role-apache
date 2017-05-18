@@ -1,0 +1,17 @@
+---
+- name: Create symlink for {{ servername }}
+  file:
+    src: "{{ apache_conf_path }}/sites-available/{{ config_file }}"
+    dest: "{{ apache_conf_path }}/sites-enabled/{% if apache_vhosts_ordered %}{{ '%05d' | format(apache_vhosts_number | int) }}-{% endif %}{{ config_file }}.conf"
+    state: link
+  notify: restart apache
+  when: create_symlink
+
+- name: Add {{ servername }} to apache_vhosts_enabled
+  set_fact:
+    apache_vhosts_enabled: "{{ apache_vhosts_enabled }} + ['{% if apache_vhosts_ordered %}{{ '%05d' | format(apache_vhosts_number | int) }}-{% endif %}{{ config_file }}.conf']"
+  when: create_symlink
+
+- name: Increment apache_vhosts_number
+  set_fact:
+    apache_vhosts_number: "{{ apache_vhosts_number | int + 1 }}"

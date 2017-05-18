@@ -119,6 +119,7 @@ Customizations for the Apache error pages. You can read about the `action` value
           - 'alias2.local'
         serveradmin: webmaster@localhost
         documentroot: '/var/www/html'
+        enabled: true
         separate_logs: true
         separate_logs_proxy_format: true
         custom_errors:
@@ -204,13 +205,13 @@ The SSL protocols and cipher suites that are used/allowed when clients make secu
 
     apache_frame_options: SAMEORIGIN
 
-This property set the security policy of the sites when they are loaded within a Frame or IFrame. You can check the valid options in [this Wikipedia Article](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Frame-Options). This global configuration can be overrided vhost by vhost.
+This property set the security policy of the sites when they are loaded within a Frame or IFrame. You can check the valid options in [this Wikipedia Article](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Frame-Options). You can also use `False` or `no` here to skip setting the header altogether. This global configuration can be overridden vhost by vhost.
 
     apache_sts: true
     apache_sts_max_age: '63072000'
     apache_sts_subdomains: true
 
-HTTP Strict Transport Security is enabled by default, with a Max Age of 1 year and the subdomains are included. This global configurations can be overrided vhost by vhost.
+HTTP Strict Transport Security is enabled by default, with a Max Age of 1 year and the subdomains are included. This global configurations can be overridden vhost by vhost.
 
     apache_mods_enabled:
       - rewrite
@@ -260,4 +261,4 @@ GPLv2
 Author Information
 ------------------
 
-This role was created in 2016 by [gcoop Cooperativa de Software Libre](http://gcoop.coop).
+This role was created in 2016 by [gcoop Cooperativa de Software Libre](https://www.gcoop.coop).
