@@ -72,7 +72,7 @@
   </IfModule>
 {% endif %}
 
-{% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_http | default(False) %}
+{% if (item.redirect_to_servername | default(True) and item.serveralias is defined) or item.custom_rewrites is defined or item.redirect_to_https | default(False) %}
   <IfModule mod_rewrite.c>
     RewriteEngine On
 {% if item.rewrite_base is defined %}
