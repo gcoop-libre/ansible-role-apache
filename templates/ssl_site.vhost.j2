@@ -50,7 +50,7 @@
 {% endif %}
 {% if apache_vhosts_version == "2.4" %}
   SSLCompression Off
-{% if apache_version | version_compare('2.4.11', '>=') %}
+{% if apache_version is version('2.4.11', '>=') %}
   SSLSessionTickets Off
 {% endif %}
 {% if 'socache_shmcb' in apache_mods_enabled %}
