@@ -10,10 +10,10 @@
   ErrorLog ${APACHE_LOG_DIR}/{{ item.servername }}.error.log
 {% if item.separate_logs_proxy_format | default(True) %}
   SetEnvIf X-Forwarded-For "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" proxy
-  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined env=!proxy
-  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log proxy env=proxy
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log {{ access_log_format|default('combined') }} env=!proxy
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log {{ access_log_proxy_format|default('proxy') }} env=proxy
 {% else %}
-  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log combined
+  CustomLog ${APACHE_LOG_DIR}/{{ item.servername }}.access.log {{ access_log_format|default('combined') }}
 {% endif %}
 {% endif %}
 
