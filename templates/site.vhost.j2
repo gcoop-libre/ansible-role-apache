@@ -36,7 +36,9 @@
 {% if item.frame_options | default(apache_frame_options) != False %}
     Header always set X-Frame-Options {{ item.frame_options | default(apache_frame_options) }}
 {% endif %}
+{% if item.nosniff | default(True) %}
     Header always set X-Content-Type-Options nosniff
+{% endif %}
   </IfModule>
 
 {% if item.deflate | default(True) %}
